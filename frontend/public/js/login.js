@@ -30,6 +30,9 @@ if (form) {
             }
 
             localStorage.setItem("token", data.token);
+            if (data._id) {
+                localStorage.setItem("userId", data._id);
+            }
             window.location.href = "dashboard.html";
 
         } catch (error) {

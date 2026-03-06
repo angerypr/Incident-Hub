@@ -16,8 +16,39 @@
             <div class="card">Incidencias Aprobadas</div>
             <div class="card">Pendientes de Validación</div>
         </div>
+        <div class="crud-section">
+            <div class="form-container">
+                <h3 id="formTitle">Reportar Nuevo Incidente</h3>
+                <form id="incidentForm">
+                    <input type="hidden" id="incidentId">
+                    <input type="text" id="incidentTitle" placeholder="Título del Incidente" required>
+                    <textarea id="incidentDescription" placeholder="Describe el incidente..." required></textarea>
+                    
+                    <div class="select-group">
+                        <select id="incidentPriority">
+                            <option value="low">Prioridad: Baja</option>
+                            <option value="medium" selected>Prioridad: Media</option>
+                            <option value="high">Prioridad: Alta</option>
+                        </select>
+                        <select id="incidentStatus" style="display: none;">
+                            <option value="pending" selected>Estado: Pendiente</option>
+                            <option value="in_progress">Estado: En progreso</option>
+                            <option value="resolved">Estado: Resuelto</option>
+                        </select>
+                    </div>
 
-        <button onclick="logout()">Cerrar Sesión</button>
+                    <button type="submit" id="submitBtn">Guardar Incidente</button>
+                    <button type="button" id="cancelBtn" class="secondary-btn" style="display: none;" onclick="resetForm()">Cancelar Edición</button>
+                </form>
+            </div>
+
+            <div class="list-container">
+                <h3>Tus Incidentes</h3>
+                <div id="incidentsList" class="incident-list"></div>
+            </div>
+        </div>
+
+        <button class="logout-btn" onclick="logout()">Cerrar Sesión</button>
     </div>
 
 <script src="js/dashboard.js"></script>
