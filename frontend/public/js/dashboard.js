@@ -41,31 +41,30 @@ function renderIncidents(incidents) {
     const userIncidents = incidents.filter(i => i.reportedBy && i.reportedBy._id === userId);
 
     if (userIncidents.length === 0) {
-        list.innerHTML = "<p>No tienes incidentes reportados.</p>";
+        list.innerHTML = "<p style='padding: 20px; color: var(--text-muted);'>No tienes incidentes reportados.</p>";
         return;
     }
 
     userIncidents.forEach(inc => {
         const item = document.createElement("div");
-        item.className = "incident-card";
-
-        let priorityColor = inc.priority === "high" ? "red" : inc.priority === "medium" ? "orange" : "green";
-        let priorityTxt = inc.priority === "high" ? "Alta" : inc.priority === "medium" ? "Media" : "Baja";
+        item.className = "incident-item";
 
         let statusTxt = inc.status === "resolved" ? "Resuelto" : inc.status === "in_progress" ? "En progreso" : "Pendiente";
 
         item.innerHTML = `
-            <div class="incident-header">
-                <h4>${inc.title}</h4>
-                <div class="incident-badges">
-                    <span class="badge" style="background-color: ${priorityColor}">${priorityTxt}</span>
-                    <span class="badge ${inc.status}">${statusTxt}</span>
-                </div>
+            <div class="item-title">
+                <span class="priority-indicator p-${inc.priority}"></span>
+                ${inc.title}
             </div>
-            <p>${inc.description}</p>
-            <div class="incident-actions">
-                <button class="edit-btn" onclick='editIncident(${JSON.stringify(inc)})'>Editar</button>
-                <button class="delete-btn" onclick="deleteIncident('${inc._id}')">Eliminar</button>
+            <div class="item-desc" title="${inc.description}">${inc.description}</div>
+            <div><span class="badge ${inc.status}">${statusTxt}</span></div>
+            <div class="item-actions">
+                <button class="action-btn edit-action" title="Editar" onclick='editIncident(${JSON.stringify(inc)})'>
+                    <i class="ph ph-pencil-simple"></i>
+                </button>
+                <button class="action-btn delete-action" title="Eliminar" onclick="deleteIncident('${inc._id}')">
+                    <i class="ph ph-trash"></i>
+                </button>
             </div>
         `;
         list.appendChild(item);
@@ -76,15 +75,20 @@ function updateCounters(incidents) {
     const userIncidents = incidents.filter(i => i.reportedBy && i.reportedBy._id === userId);
 
     const total = userIncidents.length;
-    const resolved = userIncidents.filter(i => i.status === "resolved").length;
-    const pending = userIncidents.filter(i => i.status === "pending" || i.status === "in_progress").length;
+    const resolved = incidents.filter(i => i.status === "resolved").length;
+    const isCritical = incidents.filter(i => i.priority === "high" && i.status !== "resolved").length;
+    const pending = incidents.filter(i => i.status === "pending" || i.status === "in_progress").length;
 
-    // Asumiendo el orden en dashboard.html es: Total, Aprobadas (Resueltas), Pendientes de Validación
-    const cards = document.querySelectorAll(".card");
+    // Actualizar el "Hero card"
+    const totalCountHero = document.querySelector(".hero-info h1");
+    if (totalCountHero) totalCountHero.innerHTML = `${total}`;
+
+    // Actualizar las '.stat-card' (Resueltas, Pendientes, Críticas)
+    const cards = document.querySelectorAll(".stat-card .stat-body h2");
     if (cards.length >= 3) {
-        cards[0].textContent = `Total Incidencias: ${total}`;
-        cards[1].textContent = `Incidencias Resueltas: ${resolved}`; // Renombrado en UI para ser consistente
-        cards[2].textContent = `Pendientes/Progreso: ${pending}`;
+        cards[0].textContent = `${resolved}`; // Aprobadas / Resueltas
+        cards[1].textContent = `${pending}`; // Pendientes de Validación
+        cards[2].textContent = `${isCritical}`; // Incidentes Críticos
     }
 }
 
