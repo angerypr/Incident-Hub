@@ -1,56 +1,236 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Incident-Hub | Dashboard</title>
     <link rel="stylesheet" href="assets/style.css">
+    <!-- Iconos Phosphor (para diseño moderno) -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
 </head>
-<body>
 
-    <div class="dashboard">
-        <h2>Bienvenido a Incident-Hub</h2>
+<body class="dashboard-body">
 
-        <div class="cards">
-            <div class="card">Total Incidencias</div>
-            <div class="card">Incidencias Aprobadas</div>
-            <div class="card">Pendientes de Validación</div>
-        </div>
-        <div class="crud-section">
-            <div class="form-container">
-                <h3 id="formTitle">Reportar Nuevo Incidente</h3>
-                <form id="incidentForm">
-                    <input type="hidden" id="incidentId">
-                    <input type="text" id="incidentTitle" placeholder="Título del Incidente" required>
-                    <textarea id="incidentDescription" placeholder="Describe el incidente..." required></textarea>
-                    
-                    <div class="select-group">
-                        <select id="incidentPriority">
-                            <option value="low">Prioridad: Baja</option>
-                            <option value="medium" selected>Prioridad: Media</option>
-                            <option value="high">Prioridad: Alta</option>
-                        </select>
-                        <select id="incidentStatus" style="display: none;">
-                            <option value="pending" selected>Estado: Pendiente</option>
-                            <option value="in_progress">Estado: En progreso</option>
-                            <option value="resolved">Estado: Resuelto</option>
-                        </select>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <i class="ph ph-shield-warning logo-icon"></i>
+                <h2>Incident Hub</h2>
+            </div>
+
+            <div class="nav-section">
+                <span class="nav-label">GENERAL</span>
+                <nav>
+                    <a href="#" class="nav-item active">
+                        <i class="ph ph-squares-four icon"></i> Dashboard
+                    </a>
+                    <a href="#" class="nav-item">
+                        <i class="ph ph-list-dashes icon"></i> Incidencias
+                    </a>
+                    <a href="#" class="nav-item">
+                        <i class="ph ph-chart-line-up icon"></i> Reportes
+                    </a>
+                </nav>
+            </div>
+
+            <div class="nav-section">
+                <span class="nav-label">SOPORTE</span>
+                <nav>
+                    <a href="#" class="nav-item">
+                        <i class="ph ph-gear icon"></i> Configuración
+                    </a>
+                    <a href="#" class="nav-item">
+                        <i class="ph ph-question icon"></i> Ayuda
+                    </a>
+                </nav>
+            </div>
+
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <div class="avatar">
+                        <i class="ph ph-user"></i>
+                    </div>
+                    <div class="user-details">
+                        <span class="user-name">Administrador</span>
+                        <span class="user-role">admin@hub.com</span>
+                    </div>
+                </div>
+                <button class="logout-btn-icon" title="Cerrar Sesión" onclick="logout()">
+                    <i class="ph ph-sign-out"></i>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Header -->
+            <header class="topbar">
+                <div class="search-bar">
+                    <i class="ph ph-magnifying-glass icon"></i>
+                    <input type="text" placeholder="Buscar un incidente o reporte... (Ctrl+K)">
+                </div>
+                <div class="topbar-actions">
+                    <div class="date-range">
+                        <i class="ph ph-calendar-blank"></i>
+                        <span>Hoy</span>
+                    </div>
+                    <button class="icon-btn"><i class="ph ph-bell"></i></button>
+                </div>
+            </header>
+
+            <!-- Dashboard Content -->
+            <div class="dashboard-content">
+
+                <!-- Hero Card -->
+                <div class="hero-card">
+                    <div class="hero-info">
+                        <h4>Total de Incidencias Registradas</h4>
+                        <h1>1,248</h1>
+                        <span class="trend positive"><i class="ph ph-trend-up"></i> 12.5%</span>
+                    </div>
+                    <div class="hero-actions">
+                        <button class="btn-primary" onclick="document.getElementById('incidentTitle').focus()">
+                            <i class="ph ph-plus"></i> Nueva
+                        </button>
+                        <button class="btn-secondary">
+                            <i class="ph ph-download-simple"></i> Exportar
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Stats Row -->
+                <div class="stats-row">
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="icon-wrapper green-bg"><i class="ph ph-check-circle"></i></div>
+                            <span>Aprobadas / Resueltas</span>
+                        </div>
+                        <div class="stat-body">
+                            <h2>842</h2>
+                            <span class="trend positive"><i class="ph ph-trend-up"></i> 8.4%</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="icon-wrapper yellow-bg"><i class="ph ph-hourglass-high"></i></div>
+                            <span>Pendientes de Validación</span>
+                        </div>
+                        <div class="stat-body">
+                            <h2>315</h2>
+                            <span class="trend negative"><i class="ph ph-trend-down"></i> 2.1%</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="icon-wrapper red-bg"><i class="ph ph-warning-circle"></i></div>
+                            <span>Incidentes Críticos</span>
+                        </div>
+                        <div class="stat-body">
+                            <h2>91</h2>
+                            <span class="trend negative"><i class="ph ph-trend-up"></i> 15.2%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CRUD Section -->
+                <div class="crud-section">
+                    <!-- Data List Section (Recent Activity) -->
+                    <div class="list-container">
+                        <div class="section-header">
+                            <div class="header-title">
+                                <i class="ph ph-activity"></i>
+                                <h3>Tus Incidentes</h3>
+                            </div>
+                            <div class="actions">
+                                <button class="btn-outline"><i class="ph ph-funnel"></i> Filtro</button>
+                                <button class="btn-outline"><i class="ph ph-sort-ascending"></i> Ordenar</button>
+                            </div>
+                        </div>
+
+                        <div class="list-headers">
+                            <span>TÍTULO</span>
+                            <span>DESCRIPCIÓN</span>
+                            <span>ESTADO</span>
+                            <span>ACCIONES</span>
+                        </div>
+
+                        <div id="incidentsList" class="incident-list-new">
+                            <!-- Las incidencias generadas por JS irán aquí -->
+                        </div>
                     </div>
 
-                    <button type="submit" id="submitBtn">Guardar Incidente</button>
-                    <button type="button" id="cancelBtn" class="secondary-btn" style="display: none;" onclick="resetForm()">Cancelar Edición</button>
-                </form>
-            </div>
+                    <!-- Form Section -->
+                    <div class="form-container">
+                        <div class="section-header">
+                            <div class="header-title">
+                                <i class="ph ph-file-plus"></i>
+                                <h3 id="formTitle">Reportar Incidente</h3>
+                            </div>
+                        </div>
 
-            <div class="list-container">
-                <h3>Tus Incidentes</h3>
-                <div id="incidentsList" class="incident-list"></div>
-            </div>
-        </div>
+                        <form id="incidentForm" class="modern-form">
+                            <input type="hidden" id="incidentId">
 
-        <button class="logout-btn" onclick="logout()">Cerrar Sesión</button>
+                            <div class="input-group">
+                                <label for="incidentTitle">Título del Incidente</label>
+                                <input type="text" id="incidentTitle" placeholder="Ej. Caída de red en piso 3..."
+                                    required>
+                            </div>
+
+                            <div class="input-group">
+                                <label for="incidentDescription">Descripción Detallada</label>
+                                <textarea id="incidentDescription"
+                                    placeholder="Describe los detalles, lugar y alcance del incidente..."
+                                    required></textarea>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="input-group flex-1">
+                                    <label for="incidentPriority">Prioridad</label>
+                                    <div class="select-wrapper">
+                                        <select id="incidentPriority">
+                                            <option value="low">Baja</option>
+                                            <option value="medium" selected>Media</option>
+                                            <option value="high">Alta</option>
+                                        </select>
+                                        <i class="ph ph-caret-down"></i>
+                                    </div>
+                                </div>
+                                <div class="input-group flex-1 status-group" style="display: none;">
+                                    <label for="incidentStatus">Estado Actual</label>
+                                    <div class="select-wrapper">
+                                        <select id="incidentStatus">
+                                            <option value="pending" selected>Pendiente</option>
+                                            <option value="in_progress">En progreso</option>
+                                            <option value="resolved">Resuelto</option>
+                                        </select>
+                                        <i class="ph ph-caret-down"></i>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="submit" id="submitBtn" class="btn-primary full-width">
+                                    Guardar Incidente
+                                </button>
+                                <button type="button" id="cancelBtn" class="btn-secondary full-width"
+                                    style="display: none;" onclick="resetForm()">
+                                    Cancelar Edición
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+        </main>
     </div>
 
-<script src="js/dashboard.js"></script>
+    <script src="js/dashboard.js"></script>
 </body>
+
 </html>
