@@ -5,7 +5,37 @@ if (!token || !userId) {
     window.location.href = "login.html";
 }
 
-document.addEventListener("DOMContentLoaded", fetchIncidents);
+document.addEventListener("DOMContentLoaded", () => {
+    fetchIncidents();
+    initMap();
+});
+
+let map;
+let marker;
+
+function initMap() {
+    // Coordenadas genericas (centro del mundo o una ciudad clave, ej. CDMX: [19.4326, -99.1332])
+    map = L.map('mapSelector').setView([19.4326, -99.1332], 5);
+    
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap',
+        maxZoom: 19,
+    }).addTo(map);
+
+    map.on('click', function(e) {
+        placeMarker(e.latlng);
+    });
+}
+
+function placeMarker(latlng) {
+    if (marker) {
+        marker.setLatLng(latlng);
+    } else {
+        marker = L.marker(latlng).addTo(map);
+    }
+    document.getElementById('incidentLat').value = latlng.lat;
+    document.getElementById('incidentLng').value = latlng.lng;
+}
 
 // Elementos del DOM
 const incidentForm = document.getElementById("incidentForm");
@@ -57,8 +87,11 @@ function renderIncidents(incidents) {
                 ${inc.title}
             </div>
             <div class="item-desc" title="${inc.description}">${inc.description}</div>
-            <div><span class="badge ${inc.status}">${statusTxt}</span></div>
+            <div>
+                <span class="badge ${inc.status}">${statusTxt}</span>
+            </div>
             <div class="item-actions">
+                ${inc.location && inc.location.lat ? `<a href="https://maps.google.com/?q=${inc.location.lat},${inc.location.lng}" target="_blank" class="action-btn" style="background:#e3f2fd; color:#1e88e5;" title="Ver en Google Maps"><i class="ph ph-map-pin"></i></a>` : ''}
                 <button class="action-btn edit-action" title="Editar" onclick='editIncident(${JSON.stringify(inc)})'>
                     <i class="ph ph-pencil-simple"></i>
                 </button>
@@ -106,6 +139,15 @@ async function handleIncident(e) {
         reportedBy: userId
     };
 
+    const lat = document.getElementById('incidentLat').value;
+    const lng = document.getElementById('incidentLng').value;
+    if (lat && lng) {
+        payload.location = {
+            lat: parseFloat(lat),
+            lng: parseFloat(lng)
+        };
+    }
+
     if (isEdit) {
         payload.status = statusInput.value;
     }
@@ -137,6 +179,16 @@ function editIncident(inc) {
     submitBtn.textContent = "Actualizar Incidente";
     cancelBtn.style.display = "inline-block";
     formTitle.textContent = "Editar Incidente";
+
+    if (inc.location && inc.location.lat) {
+        placeMarker({ lat: inc.location.lat, lng: inc.location.lng });
+        map.setView([inc.location.lat, inc.location.lng], 15);
+    } else {
+        if (marker) map.removeLayer(marker);
+        marker = null;
+        document.getElementById('incidentLat').value = "";
+        document.getElementById('incidentLng').value = "";
+    }
 }
 
 function resetForm() {
@@ -146,6 +198,12 @@ function resetForm() {
     submitBtn.textContent = "Guardar Incidente";
     cancelBtn.style.display = "none";
     formTitle.textContent = "Reportar Nuevo Incidente";
+
+    if (marker) map.removeLayer(marker);
+    marker = null;
+    document.getElementById('incidentLat').value = "";
+    document.getElementById('incidentLng').value = "";
+    map.setView([19.4326, -99.1332], 5);
 }
 
 async function deleteIncident(id) {

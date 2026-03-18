@@ -2,13 +2,13 @@ const Incident = require('../models/incident');
 
 exports.createIncident = async (req, res) => {
     try {
-        const { title, description, status, priority, reportedBy } = req.body;
+        const { title, description, status, priority, reportedBy, location } = req.body;
 
         if (!title || !description || !reportedBy) {
             return res.status(400).json({ message: "Title, description, and reportedBy are required" });
         }
 
-        const newIncident = new Incident({ title, description, status, priority, reportedBy });
+        const newIncident = new Incident({ title, description, status, priority, reportedBy, location });
         await newIncident.save();
 
         res.status(201).json({ message: "Incident created successfully", incident: newIncident });
@@ -40,11 +40,11 @@ exports.getIncidentById = async (req, res) => {
 
 exports.updateIncident = async (req, res) => {
     try {
-        const { title, description, status, priority } = req.body;
-
+        const { title, description, status, priority, location } = req.body;
+        
         const updatedIncident = await Incident.findByIdAndUpdate(
             req.params.id,
-            { title, description, status, priority },
+            { title, description, status, priority, location },
             { new: true, runValidators: true }
         ).populate('reportedBy', 'name email');
 

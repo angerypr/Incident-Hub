@@ -10,6 +10,10 @@
     <link rel="stylesheet" href="assets/style.css">
     <!-- Iconos Phosphor (para diseño moderno) -->
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    
+    <!-- Leaflet Map CSS and JS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 </head>
 
 <body class="dashboard-body">
@@ -211,6 +215,14 @@
                                         <i class="ph ph-caret-down"></i>
                                     </div>
                                 </div>
+                            </div>
+
+                            <div class="input-group">
+                                <label>Ubicación Geográfica</label>
+                                <div id="mapSelector" style="height: 180px; width: 100%; border-radius: 8px; border: 1px solid var(--border-color); z-index: 1;"></div>
+                                <input type="hidden" id="incidentLat">
+                                <input type="hidden" id="incidentLng">
+                                <small style="color: var(--text-muted); font-size: 12px; margin-top: 5px; display: block;">*Haz click en el mapa para marcar el punto del incidente.</small>
                             </div>
 
                             <div class="form-actions">

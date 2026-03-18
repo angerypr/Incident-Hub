@@ -29,6 +29,11 @@ const incidentSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true
+    },
+    
+    location: {
+      lat: { type: Number },
+      lng: { type: Number }
     }
   },
   {
