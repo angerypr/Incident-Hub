@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Incident-Hub | Admin Dashboard</title>
+    <link rel="stylesheet" href="assets/style.css">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <style>
+        .view-section { display: none; }
+        .view-section.active { display: block; }
+        
+        .admin-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 24px; }
+        
+        .catalog-card { background: var(--surface-color); border-radius: 16px; padding: 24px; box-shadow: var(--shadow-md); border: 1px solid var(--border-color); display: flex; flex-direction: column; height: 480px; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }
+        .catalog-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .catalog-header h3 { margin: 0; font-size: 1.1rem; color: var(--text-primary); display: flex; align-items: center; gap: 10px; font-weight: 600; }
+        .catalog-badge { background: rgba(255,255,255,0.1); color: var(--text-secondary); font-size: 13px; font-weight: 600; padding: 4px 12px; border-radius: 20px; }
+        
+        .catalog-form { display: flex; gap: 10px; margin-bottom: 20px; background: rgba(0,0,0,0.2); padding: 12px; border-radius: 12px; border: 1px dashed var(--border-color); }
+        .catalog-form input, .catalog-form select { flex: 1; padding: 10px 14px; border-radius: 8px; border: 1px solid var(--border-color); font-size: 14px; outline: none; transition: border-color 0.2s, box-shadow 0.2s; font-family: 'Poppins', sans-serif; background: rgba(15,23,42,0.5); color: white; }
+        .catalog-form input:focus, .catalog-form select:focus { border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(255, 87, 34, 0.1); }
+        .catalog-form .btn-primary { padding: 10px 18px; border-radius: 8px; font-weight: 600; font-size: 16px; display: flex; align-items: center; justify-content: center; transition: transform 0.1s; background: linear-gradient(135deg, var(--primary-color), #d84315); color: white; border: none; }
+        .catalog-form .btn-primary:active { transform: scale(0.95); }
+        
+        .catalog-list { list-style: none; padding: 0; margin: 0; overflow-y: auto; flex: 1; padding-right: 5px; scrollbar-color: var(--primary-color) transparent; }
+        .catalog-list::-webkit-scrollbar { width: 6px; }
+        .catalog-list::-webkit-scrollbar-track { background: transparent; }
+        .catalog-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
+        .catalog-list li { padding: 14px 16px; border: 1px solid var(--border-color); border-radius: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; transition: all 0.2s ease; background: rgba(30,41,59,0.3); }
+        .catalog-list li:hover { border-color: rgba(255,255,255,0.2); box-shadow: var(--shadow-sm); transform: translateY(-1px); background: rgba(30,41,59,0.6); }
+        .catalog-list li .item-name { font-weight: 600; color: var(--text-primary); font-size: 14px; display: block; }
+        .catalog-list li .item-parent { font-size: 12px; color: var(--text-muted); margin-top: 2px; display: block; }
+        
+        .action-group { display: flex; gap: 6px; }
+        .btn-small { padding: 6px 10px; border-radius: 6px; border: none; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; transition: background 0.2s, color 0.2s; font-size: 16px; }
+        .btn-edit { background: rgba(255,255,255,0.05); color: var(--text-secondary); }
+        .btn-edit:hover { background: rgba(59,130,246,0.2); color: #60a5fa; }
+        .btn-delete { background: rgba(255,255,255,0.05); color: var(--text-secondary); }
+        .btn-delete:hover { background: rgba(239,68,68,0.2); color: #f87171; }
+
+        .card { background: var(--surface-color); padding: 24px; border-radius: 16px; box-shadow: var(--shadow-md); border: 1px solid var(--border-color); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }
+        
+        .btn-success { background: rgba(59,130,246,0.2); color: #60a5fa; border: none; padding: 8px 14px; border-radius: 6px; cursor: pointer; font-weight: 500;}
+        .btn-success:hover { background: rgba(59,130,246,0.3); }
+        .btn-danger { background: rgba(239,68,68,0.2); color: #f87171; border: none; padding: 8px 14px; border-radius: 6px; cursor: pointer; font-weight: 500;}
+        .btn-danger:hover { background: rgba(239,68,68,0.3); }
+
+        .incident-card { background: var(--surface-color); border-radius: 16px; padding: 20px; box-shadow: var(--shadow-sm); border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 12px; transition: transform 0.2s, box-shadow 0.2s; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }
+        .incident-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); border-color: rgba(255,255,255,0.2); }
+        .incident-header { display: flex; justify-content: space-between; align-items: flex-start; }
+        .incident-title { font-weight: 600; color: var(--text-primary); font-size: 15px; margin: 0; }
+        .incident-date { font-size: 12px; color: var(--text-muted); }
+        .incident-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.5; flex-grow: 1; margin: 0; }
+        .incident-meta { display: flex; gap: 10px; font-size: 12px; color: var(--text-muted); background: rgba(0,0,0,0.2); padding: 8px 12px; border-radius: 8px; }
+        .incident-actions { display: flex; gap: 10px; margin-top: auto; padding-top: 12px; border-top: 1px dashed rgba(255,255,255,0.05); }
+        .btn-flex { flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px; padding: 8px; border-radius: 8px; font-weight: 500; font-size: 13px; border: none; cursor: pointer; transition: all 0.2s; }
+        .btn-approve { background: rgba(34,197,94,0.15); color: #4ade80; }
+        .btn-approve:hover { background: rgba(34,197,94,0.25); transform: scale(1.02); }
+        .btn-reject { background: rgba(239,68,68,0.15); color: #f87171; }
+        .btn-reject:hover { background: rgba(239,68,68,0.25); transform: scale(1.02); }
+    </style>
+</head>
+
+<body class="dashboard-body admin-theme">
+
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="logo">
+                <i class="ph-fill ph-shield-warning logo-icon" style="background: linear-gradient(135deg, #ff5722, #ffb300); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;"></i>
+                <h2>Admin Hub</h2>
+            </div>
+            <div class="nav-section">
+                <span class="nav-label">OPCIONES</span>
+                <nav>
+                    <a href="#" class="nav-item active" data-target="stats-view">
+                        <i class="ph ph-chart-pie-slice icon"></i> Estadisticas
+                    </a>
+                    <a href="#" class="nav-item" data-target="catalogs-view">
+                        <i class="ph ph-list-dashes icon"></i> Catalogos
+                    </a>
+                    <a href="#" class="nav-item" data-target="validations-view">
+                        <i class="ph ph-check-square icon"></i> Validaciones
+                    </a>
+                    <a href="#" class="nav-item" data-target="merge-view">
+                        <i class="ph ph-git-merge icon"></i> Fusionar Reportes
+                    </a>
+                </nav>
+            </div>
+
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <div class="avatar"><i class="ph ph-user-gear"></i></div>
+                    <div class="user-details">
+                        <span class="user-name">Super Administrador</span>
+                        <span class="user-role">admin@hub.com</span>
+                    </div>
+                </div>
+                <button class="logout-btn-icon" title="Cerrar Sesion" onclick="logout()"><i class="ph ph-sign-out"></i></button>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="topbar">
+                <h2 id="view-title" style="color: var(--text-primary); font-weight: 600;">Estadisticas</h2>
+            </header>
+
+            <div class="dashboard-content">
+                
+                <div id="stats-view" class="view-section active">
+                    <div class="stats-row">
+                        <div class="stat-card">
+                            <div class="stat-header">
+                                <div class="icon-wrapper green-bg"><i class="ph ph-users"></i></div>
+                                <span>Usuarios Activos</span>
+                            </div>
+                            <div class="stat-body"><h2 id="stat-users">0</h2></div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-header">
+                                <div class="icon-wrapper blue-bg"><i class="ph ph-file-text"></i></div>
+                                <span>Total Reportes</span>
+                            </div>
+                            <div class="stat-body"><h2 id="stat-total">0</h2></div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-header">
+                                <div class="icon-wrapper yellow-bg"><i class="ph ph-hourglass-high"></i></div>
+                                <span>Pendientes Validacion</span>
+                            </div>
+                            <div class="stat-body"><h2 id="stat-pending">0</h2></div>
+                        </div>
+                        <div class="stat-card" style="cursor: pointer; transition: transform 0.2s;" onclick="showPublishedView()" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
+                            <div class="stat-header">
+                                <div class="icon-wrapper green-bg"><i class="ph ph-check-circle"></i></div>
+                                <span>Publicados</span>
+                            </div>
+                            <div class="stat-body"><h2 id="stat-published">0</h2></div>
+                            <div style="text-align: right; color: #4ade80; font-size: 12px; margin-top: 5px; font-weight: 500;">Haz clic para ver todos <i class="ph ph-arrow-right"></i></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="catalogs-view" class="view-section">
+                    <div class="admin-grid">
+                        
+                        <div class="catalog-card">
+                            <div class="catalog-header">
+                                <h3><div class="icon-wrapper blue-bg" style="width: 32px; height: 32px; font-size: 16px;"><i class="ph ph-map-pin"></i></div> Provincias</h3>
+                                <span class="catalog-badge">1</span>
+                            </div>
+                            <form id="form-province" class="catalog-form">
+                                <input type="text" id="province-name" placeholder="Nueva Provincia" required>
+                                <button type="submit" class="btn-primary" title="Anadir"><i class="ph ph-plus-bold"></i></button>
+                            </form>
+                            <ul id="list-provinces" class="catalog-list"></ul>
+                        </div>
+                        
+                        <div class="catalog-card">
+                            <div class="catalog-header">
+                                <h3><div class="icon-wrapper green-bg" style="width: 32px; height: 32px; font-size: 16px;"><i class="ph ph-buildings"></i></div> Municipios</h3>
+                                <span class="catalog-badge">2</span>
+                            </div>
+                            <form id="form-municipality" class="catalog-form">
+                                <select id="mun-province-select" required><option value="">Provincia...</option></select>
+                                <input type="text" id="municipality-name" placeholder="Nuevo Municipio" required>
+                                <button type="submit" class="btn-primary" title="Anadir"><i class="ph ph-plus-bold"></i></button>
+                            </form>
+                            <ul id="list-municipalities" class="catalog-list"></ul>
+                        </div>
+                        
+                        <div class="catalog-card">
+                            <div class="catalog-header">
+                                <h3><div class="icon-wrapper yellow-bg" style="width: 32px; height: 32px; font-size: 16px;"><i class="ph ph-house"></i></div> Barrios</h3>
+                                <span class="catalog-badge">3</span>
+                            </div>
+                            <form id="form-neighborhood" class="catalog-form">
+                                <select id="neigh-municipality-select" required><option value="">Municipio...</option></select>
+                                <input type="text" id="neighborhood-name" placeholder="Nuevo Barrio" required>
+                                <button type="submit" class="btn-primary" title="Anadir"><i class="ph ph-plus-bold"></i></button>
+                            </form>
+                            <ul id="list-neighborhoods" class="catalog-list"></ul>
+                        </div>
+
+                        <div class="catalog-card">
+                            <div class="catalog-header">
+                                <h3><div class="icon-wrapper red-bg" style="width: 32px; height: 32px; font-size: 16px;"><i class="ph ph-warning-circle"></i></div> Categorias</h3>
+                                <span class="catalog-badge">4</span>
+                            </div>
+                            <form id="form-incident-type" class="catalog-form">
+                                <input type="text" id="itype-name" placeholder="Tipo de incidente" required>
+                                <button type="submit" class="btn-primary" title="Anadir"><i class="ph ph-plus-bold"></i></button>
+                            </form>
+                            <ul id="list-incident-types" class="catalog-list"></ul>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div id="validations-view" class="view-section">
+                    <div class="card" style="background: transparent; box-shadow: none; padding: 0; border: none; backdrop-filter: none;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                            <h3 style="margin:0; font-size: 1.2rem; display: flex; align-items: center; gap: 8px; color: var(--text-primary);">
+                                <div class="icon-wrapper yellow-bg"><i class="ph ph-shield-check"></i></div> 
+                                Pendientes de Validacion
+                            </h3>
+                        </div>
+                        <div id="validations-container" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px;">
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="published-view" class="view-section">
+                    <div class="card" style="background: transparent; box-shadow: none; padding: 0; border: none; backdrop-filter: none;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                            <h3 style="margin:0; font-size: 1.2rem; display: flex; align-items: center; gap: 8px; color: var(--text-primary);">
+                                <div class="icon-wrapper green-bg"><i class="ph ph-check-circle"></i></div> 
+                                Reportes Publicados
+                            </h3>
+                            <button class="btn-primary" style="padding: 8px 16px; font-size: 14px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);" onclick="showStatsView()"><i class="ph ph-arrow-left"></i> Volver al Inicio</button>
+                        </div>
+                        <div id="published-container" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px;">
+                        </div>
+                    </div>
+                </div>
+
+                <div id="merge-view" class="view-section">
+                    <div class="card" style="background: transparent; box-shadow: none; padding: 0; border: none; backdrop-filter: none;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                            <h3 style="margin:0; font-size: 1.2rem; display: flex; align-items: center; gap: 8px; color: var(--text-primary);">
+                                <div class="icon-wrapper purple-bg" style="background: rgba(147,51,234,0.15); color: #c084fc;"><i class="ph ph-git-merge"></i></div> 
+                                Fusionar Reportes Pendientes
+                            </h3>
+                            <button id="btn-merge-selected" class="btn-primary" style="display:none; padding: 8px 16px; font-size: 14px; background: linear-gradient(135deg, #c084fc, #9333ea);" onclick="promptMergeSelected()"><i class="ph ph-git-merge" style="margin-right: 4px;"></i> Fusionar Seleccionados</button>
+                        </div>
+                        <div id="merge-container" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px;">
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script>
+        function logout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('userId');
+            localStorage.removeItem('role');
+            window.location.href = 'login.html';
+        }
+
+        const role = localStorage.getItem('role');
+        if (role !== 'admin') {
+            window.location.href = 'login.html';
+        }
+    </script>
+    <script src="js/admin_dashboard.js?v=14"></script>
+</body>
+</html>

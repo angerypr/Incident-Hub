@@ -6,6 +6,11 @@ if (!token || !userId) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+    const userEmail = localStorage.getItem("userEmail");
+    if (userEmail) {
+        const emailLabel = document.getElementById("userEmailLabel");
+        if (emailLabel) emailLabel.textContent = userEmail;
+    }
     fetchIncidents();
     initMap();
 });
@@ -14,15 +19,15 @@ let map;
 let marker;
 
 function initMap() {
-    // Coordenadas genericas (centro del mundo o una ciudad clave, ej. CDMX: [19.4326, -99.1332])
+
     map = L.map('mapSelector').setView([19.4326, -99.1332], 5);
-    
+
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '© OpenStreetMap',
         maxZoom: 19,
     }).addTo(map);
 
-    map.on('click', function(e) {
+    map.on('click', function (e) {
         placeMarker(e.latlng);
     });
 }
@@ -37,7 +42,7 @@ function placeMarker(latlng) {
     document.getElementById('incidentLng').value = latlng.lng;
 }
 
-// Elementos del DOM
+
 const incidentForm = document.getElementById("incidentForm");
 const incidentId = document.getElementById("incidentId");
 const titleInput = document.getElementById("incidentTitle");
@@ -48,7 +53,7 @@ const submitBtn = document.getElementById("submitBtn");
 const cancelBtn = document.getElementById("cancelBtn");
 const formTitle = document.getElementById("formTitle");
 
-// Listeners
+
 incidentForm.addEventListener("submit", handleIncident);
 
 async function fetchIncidents() {
@@ -67,7 +72,7 @@ function renderIncidents(incidents) {
     const list = document.getElementById("incidentsList");
     list.innerHTML = "";
 
-    // Filtrar para mostrar solo los de este usuario para que tenga sentido el dashboard
+
     const userIncidents = incidents.filter(i => i.reportedBy && i.reportedBy._id === userId);
 
     if (userIncidents.length === 0) {
@@ -91,7 +96,7 @@ function renderIncidents(incidents) {
                 <span class="badge ${inc.status}">${statusTxt}</span>
             </div>
             <div class="item-actions">
-                ${inc.location && inc.location.lat ? `<a href="https://maps.google.com/?q=${inc.location.lat},${inc.location.lng}" target="_blank" class="action-btn" style="background:#e3f2fd; color:#1e88e5;" title="Ver en Google Maps"><i class="ph ph-map-pin"></i></a>` : ''}
+                ${inc.location && inc.location.lat ? `<a href="https://maps.google.com/?q=${inc.location.lat},${inc.location.lng}" target="_blank" class="action-btn" style="background:rgba(59,130,246,0.2); color:#60a5fa;" title="Ver en Google Maps"><i class="ph ph-map-pin"></i></a>` : ''}
                 <button class="action-btn edit-action" title="Editar" onclick='editIncident(${JSON.stringify(inc)})'>
                     <i class="ph ph-pencil-simple"></i>
                 </button>
@@ -112,16 +117,14 @@ function updateCounters(incidents) {
     const isCritical = incidents.filter(i => i.priority === "high" && i.status !== "resolved").length;
     const pending = incidents.filter(i => i.status === "pending" || i.status === "in_progress").length;
 
-    // Actualizar el "Hero card"
     const totalCountHero = document.querySelector(".hero-info h1");
     if (totalCountHero) totalCountHero.innerHTML = `${total}`;
 
-    // Actualizar las '.stat-card' (Resueltas, Pendientes, Críticas)
     const cards = document.querySelectorAll(".stat-card .stat-body h2");
     if (cards.length >= 3) {
-        cards[0].textContent = `${resolved}`; // Aprobadas / Resueltas
-        cards[1].textContent = `${pending}`; // Pendientes de Validación
-        cards[2].textContent = `${isCritical}`; // Incidentes Críticos
+        cards[0].textContent = `${resolved}`;
+        cards[1].textContent = `${pending}`;
+        cards[2].textContent = `${isCritical}`;
     }
 }
 
@@ -225,5 +228,7 @@ async function deleteIncident(id) {
 function logout() {
     localStorage.removeItem("token");
     localStorage.removeItem("userId");
+    localStorage.removeItem("userEmail");
+    localStorage.removeItem("role");
     window.location.href = "login.html";
 }

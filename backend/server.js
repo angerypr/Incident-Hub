@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const path = require('path');
 const authRoutes = require('./routes/authRoutes');
 const incidentRoutes = require('./routes/incidentRoutes');
+const adminRoutes = require('./routes/adminRoutes');
 
 const app = express();
 const PORT = 3000;
@@ -22,6 +23,7 @@ app.get('/', (req, res) => {
 // RUTAS
 app.use('/api/auth', authRoutes);
 app.use('/api/incidents', incidentRoutes);
+app.use('/api/admin', adminRoutes);
 
 app.listen(PORT, () => {
     console.log(`Servidor corriendo en http://localhost:${PORT}`);

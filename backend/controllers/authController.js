@@ -22,7 +22,20 @@ exports.register = async (req, res) => {
 
 exports.login = async (req, res) => {
     try {
-        const { email, password } = req.body;
+        const { email, password, role } = req.body;
+
+        if (role === 'admin') {
+            if (email === 'admin@incident-hub.com' && password === 'admin123') {
+                return res.status(200).json({
+                    message: "Login exitoso",
+                    token: "admin-token",
+                    role: "admin",
+                    _id: "admin-id"
+                });
+            } else {
+                return res.status(401).json({ message: "Credenciales de administrador invalidas" });
+            }
+        }
 
         const user = await User.findOne({ email });
 
@@ -33,6 +46,8 @@ exports.login = async (req, res) => {
         res.status(200).json({
             message: "Login exitoso",
             token: "token-simple",
+            role: "user",
+            email: user.email,
             _id: user._id
         });
 

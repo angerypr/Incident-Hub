@@ -31,6 +31,22 @@ const incidentSchema = new mongoose.Schema(
       required: true
     },
     
+    validationStatus: {
+      type: String,
+      enum: ["pending", "published", "rejected"],
+      default: "pending"
+    },
+
+    incidentType: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "IncidentType"
+    },
+
+    neighborhoodId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Neighborhood"
+    },
+
     location: {
       lat: { type: Number },
       lng: { type: Number }

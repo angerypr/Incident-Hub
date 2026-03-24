@@ -1,29 +1,297 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <meta charset="UTF-8">
-    <title>Incident-Hub | Login</title>
-    <link rel="stylesheet" href="../assets/style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Incident-Hub | Secure Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <style>
+        body {
+            background-color: #0f172a;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(255, 87, 34, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(59, 130, 246, 0.1) 0%, transparent 40%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            color: #e2e8f0;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Ambient glowing background blobs */
+        .blob {
+            position: absolute;
+            filter: blur(80px);
+            z-index: 0;
+            border-radius: 50%;
+            animation: float 10s infinite ease-in-out alternate;
+        }
+        .blob-1 {
+            width: 400px;
+            height: 400px;
+            background: rgba(255, 87, 34, 0.15);
+            top: -100px;
+            left: -100px;
+        }
+        .blob-2 {
+            width: 350px;
+            height: 350px;
+            background: rgba(59, 130, 246, 0.15);
+            bottom: -50px;
+            right: -100px;
+            animation-delay: -5s;
+        }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(30px, 50px) scale(1.1); }
+        }
+
+        .auth-wrapper {
+            width: 100%;
+            max-width: 420px;
+            padding: 20px;
+            z-index: 10;
+        }
+
+        .auth-card {
+            background: rgba(30, 41, 59, 0.4);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 24px;
+            padding: 45px 35px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            text-align: center;
+        }
+
+        .brand-icon {
+            font-size: 56px;
+            background: linear-gradient(135deg, #ff5722, #ffb300);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 5px;
+            display: inline-block;
+        }
+
+        .auth-title {
+            font-size: 26px;
+            font-weight: 700;
+            margin: 0 0 8px 0;
+            color: #ffffff;
+            letter-spacing: -0.5px;
+        }
+
+        .auth-subtitle {
+            font-size: 14px;
+            color: #94a3b8;
+            margin: 0 0 35px 0;
+        }
+
+        /* Segmented Control for Role Selection */
+        .role-tabs {
+            display: flex;
+            background: rgba(15, 23, 42, 0.6);
+            border-radius: 12px;
+            padding: 5px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .role-option {
+            flex: 1;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .role-option input {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .role-label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #64748b;
+            transition: all 0.3s ease;
+        }
+
+        .role-option input:checked ~ .role-label {
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Inputs */
+        .input-group {
+            position: relative;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #64748b;
+            font-size: 20px;
+            transition: color 0.3s ease;
+            pointer-events: none;
+        }
+
+        .auth-input {
+            width: 100%;
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 16px 16px 16px 48px;
+            color: #ffffff;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        .auth-input::placeholder {
+            color: #475569;
+        }
+
+        .auth-input:focus {
+            outline: none;
+            border-color: #ff5722;
+            background: rgba(15, 23, 42, 0.8);
+            box-shadow: 0 0 0 4px rgba(255, 87, 34, 0.1);
+        }
+
+        .input-group:focus-within .input-icon {
+            color: #ff5722;
+        }
+
+        /* Buttons */
+        .btn-primary {
+            width: 100%;
+            background: linear-gradient(135deg, #ff5722, #d84315);
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 12px;
+            font-family: inherit;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 87, 34, 0.25);
+            margin-top: 10px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 87, 34, 0.4);
+            background: linear-gradient(135deg, #ff7043, #e64a19);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            width: 100%;
+            background: transparent;
+            color: #94a3b8;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 14px;
+            border-radius: 12px;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: #ffffff;
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        #error {
+            color: #ef4444;
+            font-size: 13px;
+            min-height: 20px;
+            margin: -5px 0 15px 0;
+            display: block;
+        }
+    </style>
 </head>
 <body>
 
-    <div class="login-container">
-        <h2>Incident-Hub</h2>
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
 
-        <form id="loginForm">
-            <input type="email" id="email" placeholder="Correo electrónico" required>
-            <input type="password" id="password" placeholder="Contraseña" required>
-            <button type="submit">Iniciar Sesión</button>
-            <button type="button" class="secondary-btn" id="goRegister">
-    Regístrate
-</button>
+    <div class="auth-wrapper">
+        <div class="auth-card">
+            
+            <div class="brand-icon">
+                <i class="ph-fill ph-shield-warning"></i>
+            </div>
+            
+            <h2 class="auth-title">Incident-Hub</h2>
+            <p class="auth-subtitle">Portal Central de Gestion de Incidencias</p>
 
-        </form>
+            <div class="role-tabs">
+                <label class="role-option">
+                    <input type="radio" name="role" value="user" checked>
+                    <span class="role-label"><i class="ph ph-user"></i> Ciudadano</span>
+                </label>
+                <label class="role-option">
+                    <input type="radio" name="role" value="admin">
+                    <span class="role-label"><i class="ph ph-shield-check"></i> Admin</span>
+                </label>
+            </div>
 
-        <p id="error" class="error"></p>
+            <form id="loginForm">
+                <div class="input-group">
+                    <i class="ph ph-envelope-simple input-icon"></i>
+                    <input type="email" id="email" class="auth-input" placeholder="Correo electronico" required>
+                </div>
+                
+                <div class="input-group">
+                    <i class="ph ph-lock-key input-icon"></i>
+                    <input type="password" id="password" class="auth-input" placeholder="Contrasena" required>
+                </div>
+
+                <p id="error" class="error"></p>
+
+                <button type="submit" class="btn-primary">
+                    <i class="ph-bold ph-sign-in"></i> Acceder al Portal
+                </button>
+                <button type="button" class="btn-secondary" id="goRegister">
+                    Crear Nueva Cuenta
+                </button>
+            </form>
+
+        </div>
     </div>
 
-<script src="js/login.js"></script>
+    <script src="js/login.js?v=3"></script>
 </body>
 </html>
