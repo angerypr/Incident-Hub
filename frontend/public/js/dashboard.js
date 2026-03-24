@@ -17,6 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 let map;
 let marker;
+let allIncidents = [];
 
 function initMap() {
 
@@ -56,13 +57,18 @@ const formTitle = document.getElementById("formTitle");
 
 incidentForm.addEventListener("submit", handleIncident);
 
+const filterStatus = document.getElementById("filterStatus");
+if (filterStatus) {
+    filterStatus.addEventListener("change", () => renderIncidents(allIncidents));
+}
+
 async function fetchIncidents() {
     try {
         const response = await fetch("http://localhost:3000/api/incidents");
-        const incidents = await response.json();
+        allIncidents = await response.json();
 
-        renderIncidents(incidents);
-        updateCounters(incidents);
+        renderIncidents(allIncidents);
+        updateCounters(allIncidents);
     } catch (error) {
         console.error("Error al cargar incidentes:", error);
     }
@@ -73,10 +79,15 @@ function renderIncidents(incidents) {
     list.innerHTML = "";
 
 
-    const userIncidents = incidents.filter(i => i.reportedBy && i.reportedBy._id === userId);
+    let userIncidents = incidents.filter(i => i.reportedBy && i.reportedBy._id === userId);
+
+    const filterVal = document.getElementById("filterStatus")?.value || 'all';
+    if(filterVal !== 'all') {
+        userIncidents = userIncidents.filter(i => i.validationStatus === filterVal);
+    }
 
     if (userIncidents.length === 0) {
-        list.innerHTML = "<p style='padding: 20px; color: var(--text-muted);'>No tienes incidentes reportados.</p>";
+        list.innerHTML = "<p style='padding: 20px; color: var(--text-muted);'>No tienes incidentes reportados para este filtro.</p>";
         return;
     }
 
@@ -84,7 +95,19 @@ function renderIncidents(incidents) {
         const item = document.createElement("div");
         item.className = "incident-item";
 
-        let statusTxt = inc.status === "resolved" ? "Resuelto" : inc.status === "in_progress" ? "En progreso" : "Pendiente";
+        let statusTxt = "";
+        let badgeClass = "";
+        
+        if (inc.validationStatus === "published") {
+            statusTxt = "Aprobado";
+            badgeClass = "resolved"; 
+        } else if (inc.validationStatus === "rejected") {
+            statusTxt = "Rechazado";
+            badgeClass = "rejected"; 
+        } else {
+            statusTxt = "En Revisión";
+            badgeClass = "pending";
+        }
 
         item.innerHTML = `
             <div class="item-title">
@@ -93,7 +116,7 @@ function renderIncidents(incidents) {
             </div>
             <div class="item-desc" title="${inc.description}">${inc.description}</div>
             <div>
-                <span class="badge ${inc.status}">${statusTxt}</span>
+                <span class="badge ${badgeClass}">${statusTxt}</span>
             </div>
             <div class="item-actions">
                 ${inc.location && inc.location.lat ? `<a href="https://maps.google.com/?q=${inc.location.lat},${inc.location.lng}" target="_blank" class="action-btn" style="background:rgba(59,130,246,0.2); color:#60a5fa;" title="Ver en Google Maps"><i class="ph ph-map-pin"></i></a>` : ''}
@@ -113,9 +136,9 @@ function updateCounters(incidents) {
     const userIncidents = incidents.filter(i => i.reportedBy && i.reportedBy._id === userId);
 
     const total = userIncidents.length;
-    const resolved = incidents.filter(i => i.status === "resolved").length;
-    const isCritical = incidents.filter(i => i.priority === "high" && i.status !== "resolved").length;
-    const pending = incidents.filter(i => i.status === "pending" || i.status === "in_progress").length;
+    const resolved = userIncidents.filter(i => i.validationStatus === "published").length;
+    const pending = userIncidents.filter(i => i.validationStatus === "pending").length;
+    const rejected = userIncidents.filter(i => i.validationStatus === "rejected").length;
 
     const totalCountHero = document.querySelector(".hero-info h1");
     if (totalCountHero) totalCountHero.innerHTML = `${total}`;
@@ -124,7 +147,7 @@ function updateCounters(incidents) {
     if (cards.length >= 3) {
         cards[0].textContent = `${resolved}`;
         cards[1].textContent = `${pending}`;
-        cards[2].textContent = `${isCritical}`;
+        cards[2].textContent = `${rejected}`;
     }
 }
 

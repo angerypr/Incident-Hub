@@ -8,10 +8,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Incident-Hub | Dashboard</title>
     <link rel="stylesheet" href="assets/style.css">
-    <!-- Iconos Phosphor (para diseño moderno) -->
+
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
 
-    <!-- Leaflet Map CSS and JS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 </head>
@@ -19,7 +18,7 @@
 <body class="dashboard-body">
 
     <div class="app-container">
-        <!-- Sidebar -->
+
         <aside class="sidebar">
             <div class="logo">
                 <i class="ph ph-shield-warning logo-icon"></i>
@@ -69,9 +68,8 @@
             </div>
         </aside>
 
-        <!-- Main Content -->
         <main class="main-content">
-            <!-- Top Header -->
+
             <header class="topbar">
                 <div class="search-bar">
                     <i class="ph ph-magnifying-glass icon"></i>
@@ -86,10 +84,8 @@
                 </div>
             </header>
 
-            <!-- Dashboard Content -->
             <div class="dashboard-content">
 
-                <!-- Hero Card -->
                 <div class="hero-card">
                     <div class="hero-info">
                         <h4>Total de Incidencias Registradas</h4>
@@ -106,7 +102,6 @@
                     </div>
                 </div>
 
-                <!-- Stats Row -->
                 <div class="stats-row">
                     <div class="stat-card">
                         <div class="stat-header">
@@ -130,8 +125,8 @@
                     </div>
                     <div class="stat-card">
                         <div class="stat-header">
-                            <div class="icon-wrapper red-bg"><i class="ph ph-warning-circle"></i></div>
-                            <span>Incidentes Críticos</span>
+                            <div class="icon-wrapper red-bg"><i class="ph ph-x-circle"></i></div>
+                            <span>Reportes Rechazados</span>
                         </div>
                         <div class="stat-body">
                             <h2>91</h2>
@@ -140,9 +135,8 @@
                     </div>
                 </div>
 
-                <!-- CRUD Section -->
                 <div class="crud-section">
-                    <!-- Data List Section (Recent Activity) -->
+
                     <div class="list-container">
                         <div class="section-header">
                             <div class="header-title">
@@ -150,8 +144,13 @@
                                 <h3>Tus Incidentes</h3>
                             </div>
                             <div class="actions">
-                                <button class="btn-outline"><i class="ph ph-funnel"></i> Filtro</button>
-                                <button class="btn-outline"><i class="ph ph-sort-ascending"></i> Ordenar</button>
+                                <select id="filterStatus" class="btn-outline" style="background: rgba(15,23,42,0.5); color: white; border: 1px solid rgba(255,255,255,0.1); padding: 8px 12px; border-radius: 8px; font-family: 'Poppins'; outline: none; cursor: pointer; backdrop-filter: blur(10px);">
+                                    <option value="all">Todas</option>
+                                    <option value="published">Aprobadas</option>
+                                    <option value="pending">Pendientes</option>
+                                    <option value="rejected">Rechazadas</option>
+                                </select>
+                                <button class="btn-outline" style="background: rgba(15,23,42,0.5); color: white; border: 1px solid rgba(255,255,255,0.1); padding: 8px 12px; border-radius: 8px;"><i class="ph ph-sort-ascending"></i> Ordenar</button>
                             </div>
                         </div>
 
@@ -163,11 +162,11 @@
                         </div>
 
                         <div id="incidentsList" class="incident-list-new">
-                            <!-- Las incidencias generadas por JS irán aquí -->
+
                         </div>
                     </div>
 
-                    <!-- Form Section -->
+
                     <div class="form-container">
                         <div class="section-header">
                             <div class="header-title">
