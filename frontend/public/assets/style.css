@@ -867,3 +867,40 @@ th { color: var(--text-muted); background: rgba(0,0,0,0.2) !important; }
 table { width: 100%; border-collapse: collapse; }
 
 /* Original incident classes needed for javascript compatibility */
+
+/* =========================================
+   LIGHT MODE SUPPLEMENTS
+========================================= */
+:root.light-mode {
+    --bg-color: #f1f5f9;
+    --surface-color: rgba(255, 255, 255, 0.8);
+    --sidebar-bg: rgba(255, 255, 255, 0.95);
+    --text-primary: #1e293b;
+    --text-secondary: #475569;
+    --border-color: rgba(0, 0, 0, 0.08);
+}
+:root.light-mode body {
+    background-image: 
+        radial-gradient(circle at 10% 20%, rgba(255, 87, 34, 0.05) 0%, transparent 40%),
+        radial-gradient(circle at 90% 80%, rgba(59, 130, 246, 0.08) 0%, transparent 40%);
+}
+
+:root.light-mode .incident-item { background-color: rgba(255, 255, 255, 0.65) !important; color: var(--text-primary) !important; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border: 1px solid rgba(0,0,0,0.05); }
+:root.light-mode .incident-item:hover { background-color: white !important; box-shadow: 0 4px 8px rgba(0,0,0,0.08); }
+
+:root.light-mode .modern-form input[type="text"], 
+:root.light-mode .modern-form textarea, 
+:root.light-mode .select-wrapper select { 
+    background-color: rgba(255, 255, 255, 0.9) !important; 
+    color: var(--text-primary) !important; 
+    border-color: rgba(0,0,0,0.1) !important;
+}
+
+:root.light-mode #cancelBtn:hover { background-color: rgba(0,0,0,0.05) !important; color: var(--text-primary) !important; }
+:root.light-mode th { background: rgba(0,0,0,0.03) !important; color: var(--text-secondary); }
+:root.light-mode td { color: var(--text-primary); }
+
+:root.light-mode .icon-btn { background-color: white; color: var(--text-secondary); border-color: rgba(0,0,0,0.1); }
+:root.light-mode .icon-btn:hover { background-color: #f8fafc; color: var(--primary-color); }
+:root.light-mode .date-range, :root.light-mode .search-bar { background-color: white; border-color: rgba(0,0,0,0.1); }
+:root.light-mode .login-container { background-color: white; border-color: rgba(0,0,0,0.1); }

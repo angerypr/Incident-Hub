@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <script src="js/theme.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Incident-Hub | Configuración</title>
+    <link rel="stylesheet" href="assets/style.css">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <style>
+        .settings-card {
+            background-color: var(--surface-color);
+            border-radius: var(--border-radius);
+            padding: 30px;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 20px;
+        }
+        .settings-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .settings-header i {
+            font-size: 24px;
+            color: var(--primary-color);
+        }
+        .settings-header h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+        }
+        .setting-info h4 {
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 5px;
+        }
+        .setting-info p {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+        /* Toggle Switch CSS */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 26px;
+        }
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider {
+            background-color: var(--primary-color);
+        }
+        input:checked + .slider:before {
+            transform: translateX(24px);
+        }
+    </style>
+</head>
+
+<body class="dashboard-body">
+
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <i class="ph ph-shield-warning logo-icon"></i>
+                <h2>Incident Hub</h2>
+            </div>
+
+            <div class="nav-section">
+                <span class="nav-label">GENERAL</span>
+                <nav>
+                    <a href="dashboard.html" class="nav-item">
+                        <i class="ph ph-squares-four icon"></i> Dashboard
+                    </a>
+                    <a href="incidents.html" class="nav-item">
+                        <i class="ph ph-list-dashes icon"></i> Incidencias
+                    </a>
+                    <a href="#" class="nav-item">
+                        <i class="ph ph-chart-line-up icon"></i> Reportes
+                    </a>
+                </nav>
+            </div>
+
+            <div class="nav-section">
+                <span class="nav-label">SOPORTE</span>
+                <nav>
+                    <a href="configuracion.html" class="nav-item active">
+                        <i class="ph ph-gear icon"></i> Configuración
+                    </a>
+                    <a href="#" class="nav-item">
+                        <i class="ph ph-question icon"></i> Ayuda
+                    </a>
+                </nav>
+            </div>
+
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <div class="avatar">
+                        <i class="ph ph-user"></i>
+                    </div>
+                    <div class="user-details">
+                        <span class="user-name" id="userNameLabel">Usuario Estándar</span>
+                        <span class="user-role" id="userEmailLabel">usuario@hub.com</span>
+                    </div>
+                </div>
+                <button class="logout-btn-icon" title="Cerrar Sesión" onclick="logout()">
+                    <i class="ph ph-sign-out"></i>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Header -->
+            <header class="topbar">
+                <div class="search-bar">
+                    <i class="ph ph-magnifying-glass icon"></i>
+                    <input type="text" placeholder="Buscar... (Ctrl+K)">
+                </div>
+                <div class="topbar-actions">
+                    <div class="date-range">
+                        <i class="ph ph-calendar-blank"></i>
+                        <span>Hoy</span>
+                    </div>
+                    <button class="icon-btn"><i class="ph ph-bell"></i></button>
+                </div>
+            </header>
+
+            <!-- Settings Content -->
+            <div class="dashboard-content">
+                <div class="section-header">
+                    <div class="header-title">
+                        <i class="ph ph-gear"></i>
+                        <h3>Configuración del Sistema</h3>
+                    </div>
+                </div>
+
+                <div class="settings-card">
+                    <div class="settings-header">
+                        <i class="ph ph-palette"></i>
+                        <h3>Apariencia</h3>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h4>Modo Claro</h4>
+                            <p>Cambia el aspecto visual de la aplicación a tonos claros.</p>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="themeToggle">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="settings-card">
+                    <div class="settings-header">
+                        <i class="ph ph-globe"></i>
+                        <h3>Idioma y Región</h3>
+                    </div>
+                    <!-- Language selector to be implemented in the next step -->
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h4>Idioma de la interfaz</h4>
+                            <p>Selecciona el idioma preferido para la aplicación.</p>
+                        </div>
+                        <div class="select-wrapper" style="width: 200px;">
+                            <select id="languageSelect" class="modern-form" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); background-color: rgba(15, 23, 42, 0.5); color: white;">
+                                <option value="es" selected>Español</option>
+                                <option value="en">English</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Same logout logic as dashboard -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const userEmail = localStorage.getItem("userEmail");
+            if (userEmail) {
+                const emailLabel = document.getElementById("userEmailLabel");
+                if (emailLabel) emailLabel.textContent = userEmail;
+            }
+        });
+        function logout() {
+            localStorage.removeItem("token");
+            localStorage.removeItem("userId");
+            localStorage.removeItem("userEmail");
+            localStorage.removeItem("role");
+            window.location.href = "login.html";
+        }
+    </script>
+    <script src="js/configuracion.js"></script>
+</body>
+</html>
