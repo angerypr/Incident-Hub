@@ -27,28 +27,28 @@
             </div>
 
             <div class="nav-section">
-                <span class="nav-label">GENERAL</span>
+                <span class="nav-label" data-i18n="general">GENERAL</span>
                 <nav>
                     <a href="#" class="nav-item active">
-                        <i class="ph ph-squares-four icon"></i> Dashboard
+                        <i class="ph ph-squares-four icon"></i> <span data-i18n="dashboard">Dashboard</span>
                     </a>
                     <a href="#" class="nav-item">
-                        <i class="ph ph-list-dashes icon"></i> Incidencias
+                        <i class="ph ph-list-dashes icon"></i> <span data-i18n="incidents">Incidencias</span>
                     </a>
                     <a href="#" class="nav-item">
-                        <i class="ph ph-chart-line-up icon"></i> Reportes
+                        <i class="ph ph-chart-line-up icon"></i> <span data-i18n="reports">Reportes</span>
                     </a>
                 </nav>
             </div>
 
             <div class="nav-section">
-                <span class="nav-label">SOPORTE</span>
+                <span class="nav-label" data-i18n="support">SOPORTE</span>
                 <nav>
                     <a href="configuracion.html" class="nav-item">
-                        <i class="ph ph-gear icon"></i> Configuración
+                        <i class="ph ph-gear icon"></i> <span data-i18n="settings">Configuración</span>
                     </a>
                     <a href="#" class="nav-item">
-                        <i class="ph ph-question icon"></i> Ayuda
+                        <i class="ph ph-question icon"></i> <span data-i18n="help">Ayuda</span>
                     </a>
                 </nav>
             </div>
@@ -74,12 +74,13 @@
             <header class="topbar">
                 <div class="search-bar">
                     <i class="ph ph-magnifying-glass icon"></i>
-                    <input type="text" placeholder="Buscar un incidente o reporte... (Ctrl+K)">
+                    <input type="text" data-i18n="search_placeholder"
+                        placeholder="Buscar un incidente o reporte... (Ctrl+K)">
                 </div>
                 <div class="topbar-actions">
                     <div class="date-range">
                         <i class="ph ph-calendar-blank"></i>
-                        <span>Hoy</span>
+                        <span data-i18n="today">Hoy</span>
                     </div>
                     <button class="icon-btn"><i class="ph ph-bell"></i></button>
                 </div>
@@ -89,16 +90,16 @@
 
                 <div class="hero-card">
                     <div class="hero-info">
-                        <h4>Total de Incidencias Registradas</h4>
+                        <h4 data-i18n="total_incidents">Total de Incidencias Registradas</h4>
                         <h1>1,248</h1>
                         <span class="trend positive"><i class="ph ph-trend-up"></i> 12.5%</span>
                     </div>
                     <div class="hero-actions">
                         <button class="btn-primary" onclick="document.getElementById('incidentTitle').focus()">
-                            <i class="ph ph-plus"></i> Nueva
+                            <i class="ph ph-plus"></i> <span data-i18n="new">Nueva</span>
                         </button>
                         <button class="btn-secondary">
-                            <i class="ph ph-download-simple"></i> Exportar
+                            <i class="ph ph-download-simple"></i> <span data-i18n="export">Exportar</span>
                         </button>
                     </div>
                 </div>
@@ -107,7 +108,7 @@
                     <div class="stat-card">
                         <div class="stat-header">
                             <div class="icon-wrapper green-bg"><i class="ph ph-check-circle"></i></div>
-                            <span>Aprobadas / Resueltas</span>
+                            <span data-i18n="approved">Aprobadas / Resueltas</span>
                         </div>
                         <div class="stat-body">
                             <h2>842</h2>
@@ -117,7 +118,7 @@
                     <div class="stat-card">
                         <div class="stat-header">
                             <div class="icon-wrapper yellow-bg"><i class="ph ph-hourglass-high"></i></div>
-                            <span>Pendientes de Validación</span>
+                            <span data-i18n="pending">Pendientes de Validación</span>
                         </div>
                         <div class="stat-body">
                             <h2>315</h2>
@@ -127,7 +128,7 @@
                     <div class="stat-card">
                         <div class="stat-header">
                             <div class="icon-wrapper red-bg"><i class="ph ph-x-circle"></i></div>
-                            <span>Reportes Rechazados</span>
+                            <span data-i18n="critical">Reportes Rechazados</span>
                         </div>
                         <div class="stat-body">
                             <h2>91</h2>
@@ -142,24 +143,27 @@
                         <div class="section-header">
                             <div class="header-title">
                                 <i class="ph ph-activity"></i>
-                                <h3>Tus Incidentes</h3>
+                                <h3 data-i18n="your_incidents">Tus Incidentes</h3>
                             </div>
                             <div class="actions">
-                                <select id="filterStatus" class="btn-outline" style="background: rgba(15,23,42,0.5); color: white; border: 1px solid rgba(255,255,255,0.1); padding: 8px 12px; border-radius: 8px; font-family: 'Poppins'; outline: none; cursor: pointer; backdrop-filter: blur(10px);">
-                                    <option value="all">Todas</option>
-                                    <option value="published">Aprobadas</option>
-                                    <option value="pending">Pendientes</option>
-                                    <option value="rejected">Rechazadas</option>
+                                <select id="filterStatus" class="btn-outline"
+                                    style="background: rgba(15,23,42,0.5); color: white; border: 1px solid rgba(255,255,255,0.1); padding: 8px 12px; border-radius: 8px; font-family: 'Poppins'; outline: none; cursor: pointer; backdrop-filter: blur(10px);">
+                                    <option value="all" data-i18n="all">Todas</option>
+                                    <option value="published" data-i18n="approved_filter">Aprobadas</option>
+                                    <option value="pending" data-i18n="pending_filter">Pendientes</option>
+                                    <option value="rejected" data-i18n="rejected_filter">Rechazadas</option>
                                 </select>
-                                <button class="btn-outline" style="background: rgba(15,23,42,0.5); color: white; border: 1px solid rgba(255,255,255,0.1); padding: 8px 12px; border-radius: 8px;"><i class="ph ph-sort-ascending"></i> Ordenar</button>
+                                <button class="btn-outline"
+                                    style="background: rgba(15,23,42,0.5); color: white; border: 1px solid rgba(255,255,255,0.1); padding: 8px 12px; border-radius: 8px;"><i
+                                        class="ph ph-sort-ascending"></i> <span data-i18n="sort">Ordenar</span></button>
                             </div>
                         </div>
 
                         <div class="list-headers">
-                            <span>TÍTULO</span>
-                            <span>DESCRIPCIÓN</span>
-                            <span>ESTADO</span>
-                            <span>ACCIONES</span>
+                            <span data-i18n="title">TÍTULO</span>
+                            <span data-i18n="desc">DESCRIPCIÓN</span>
+                            <span data-i18n="status">ESTADO</span>
+                            <span data-i18n="actions">ACCIONES</span>
                         </div>
 
                         <div id="incidentsList" class="incident-list-new">
@@ -172,7 +176,7 @@
                         <div class="section-header">
                             <div class="header-title">
                                 <i class="ph ph-file-plus"></i>
-                                <h3 id="formTitle">Reportar Incidente</h3>
+                                <h3 id="formTitle" data-i18n="report_incident">Reportar Incidente</h3>
                             </div>
                         </div>
 
@@ -180,37 +184,38 @@
                             <input type="hidden" id="incidentId">
 
                             <div class="input-group">
-                                <label for="incidentTitle">Título del Incidente</label>
-                                <input type="text" id="incidentTitle" placeholder="Ej. Caída de red en piso 3..."
-                                    required>
+                                <label for="incidentTitle" data-i18n="incident_title_label">Título del Incidente</label>
+                                <input type="text" id="incidentTitle" data-i18n="title_placeholder"
+                                    placeholder="Ej. Caída de red en piso 3..." required>
                             </div>
 
                             <div class="input-group">
-                                <label for="incidentDescription">Descripción Detallada</label>
-                                <textarea id="incidentDescription"
+                                <label for="incidentDescription" data-i18n="incident_desc_label">Descripción
+                                    Detallada</label>
+                                <textarea id="incidentDescription" data-i18n-placeholder="desc_placeholder"
                                     placeholder="Describe los detalles, lugar y alcance del incidente..."
                                     required></textarea>
                             </div>
 
                             <div class="form-row">
                                 <div class="input-group flex-1">
-                                    <label for="incidentPriority">Prioridad</label>
+                                    <label for="incidentPriority" data-i18n="incident_priority_label">Prioridad</label>
                                     <div class="select-wrapper">
                                         <select id="incidentPriority">
-                                            <option value="low">Baja</option>
-                                            <option value="medium" selected>Media</option>
-                                            <option value="high">Alta</option>
+                                            <option value="low" data-i18n="priority_low">Baja</option>
+                                            <option value="medium" selected data-i18n="priority_medium">Media</option>
+                                            <option value="high" data-i18n="priority_high">Alta</option>
                                         </select>
                                         <i class="ph ph-caret-down"></i>
                                     </div>
                                 </div>
                                 <div class="input-group flex-1 status-group" style="display: none;">
-                                    <label for="incidentStatus">Estado Actual</label>
+                                    <label for="incidentStatus" data-i18n="status_label">Estado Actual</label>
                                     <div class="select-wrapper">
                                         <select id="incidentStatus">
-                                            <option value="pending" selected>Pendiente</option>
-                                            <option value="in_progress">En progreso</option>
-                                            <option value="resolved">Resuelto</option>
+                                            <option value="pending" selected data-i18n="st_pending">Pendiente</option>
+                                            <option value="in_progress" data-i18n="st_progress">En progreso</option>
+                                            <option value="resolved" data-i18n="st_resolved">Resuelto</option>
                                         </select>
                                         <i class="ph ph-caret-down"></i>
                                     </div>
@@ -218,23 +223,25 @@
                             </div>
 
                             <div class="input-group">
-                                <label>Ubicación Geográfica</label>
+                                <label data-i18n="incident_location_label">Ubicación Geográfica</label>
                                 <div id="mapSelector"
                                     style="height: 180px; width: 100%; border-radius: 8px; border: 1px solid var(--border-color); z-index: 1;">
                                 </div>
                                 <input type="hidden" id="incidentLat">
                                 <input type="hidden" id="incidentLng">
                                 <small
-                                    style="color: var(--text-muted); font-size: 12px; margin-top: 5px; display: block;">*Haz
+                                    style="color: var(--text-muted); font-size: 12px; margin-top: 5px; display: block;"
+                                    data-i18n="map_instruction">*Haz
                                     click en el mapa para marcar el punto del incidente.</small>
                             </div>
 
                             <div class="form-actions">
-                                <button type="submit" id="submitBtn" class="btn-primary full-width">
+                                <button type="submit" id="submitBtn" class="btn-primary full-width"
+                                    data-i18n="save_incident">
                                     Guardar Incidente
                                 </button>
                                 <button type="button" id="cancelBtn" class="btn-secondary full-width"
-                                    style="display: none;" onclick="resetForm()">
+                                    style="display: none;" onclick="resetForm()" data-i18n="cancel_edit">
                                     Cancelar Edición
                                 </button>
                             </div>
@@ -246,6 +253,7 @@
         </main>
     </div>
 
+    <script src="js/i18n.js"></script>
     <script src="js/dashboard.js?v=2"></script>
 </body>
 

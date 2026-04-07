@@ -16,5 +16,14 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // Language handling will be added here in the next step
+    const languageSelect = document.getElementById("languageSelect");
+    if (localStorage.getItem("lang")) {
+        languageSelect.value = localStorage.getItem("lang");
+    }
+
+    languageSelect.addEventListener("change", (e) => {
+        const lang = e.target.value;
+        localStorage.setItem("lang", lang);
+        applyLanguage(lang);
+    });
 });

@@ -19,6 +19,7 @@
             box-shadow: var(--shadow-sm);
             margin-bottom: 20px;
         }
+
         .settings-header {
             display: flex;
             align-items: center;
@@ -27,31 +28,37 @@
             padding-bottom: 15px;
             border-bottom: 1px solid var(--border-color);
         }
+
         .settings-header i {
             font-size: 24px;
             color: var(--primary-color);
         }
+
         .settings-header h3 {
             font-size: 18px;
             font-weight: 600;
             color: var(--text-primary);
         }
+
         .setting-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 15px 0;
         }
+
         .setting-info h4 {
             font-size: 15px;
             font-weight: 500;
             color: var(--text-primary);
             margin-bottom: 5px;
         }
+
         .setting-info p {
             font-size: 13px;
             color: var(--text-secondary);
         }
+
         /* Toggle Switch CSS */
         .switch {
             position: relative;
@@ -59,11 +66,13 @@
             width: 50px;
             height: 26px;
         }
+
         .switch input {
             opacity: 0;
             width: 0;
             height: 0;
         }
+
         .slider {
             position: absolute;
             cursor: pointer;
@@ -75,6 +84,7 @@
             transition: .4s;
             border-radius: 34px;
         }
+
         .slider:before {
             position: absolute;
             content: "";
@@ -86,10 +96,12 @@
             transition: .4s;
             border-radius: 50%;
         }
-        input:checked + .slider {
+
+        input:checked+.slider {
             background-color: var(--primary-color);
         }
-        input:checked + .slider:before {
+
+        input:checked+.slider:before {
             transform: translateX(24px);
         }
     </style>
@@ -106,28 +118,28 @@
             </div>
 
             <div class="nav-section">
-                <span class="nav-label">GENERAL</span>
+                <span class="nav-label" data-i18n="general">GENERAL</span>
                 <nav>
                     <a href="dashboard.html" class="nav-item">
-                        <i class="ph ph-squares-four icon"></i> Dashboard
+                        <i class="ph ph-squares-four icon"></i> <span data-i18n="dashboard">Dashboard</span>
                     </a>
                     <a href="incidents.html" class="nav-item">
-                        <i class="ph ph-list-dashes icon"></i> Incidencias
+                        <i class="ph ph-list-dashes icon"></i> <span data-i18n="incidents">Incidencias</span>
                     </a>
                     <a href="#" class="nav-item">
-                        <i class="ph ph-chart-line-up icon"></i> Reportes
+                        <i class="ph ph-chart-line-up icon"></i> <span data-i18n="reports">Reportes</span>
                     </a>
                 </nav>
             </div>
 
             <div class="nav-section">
-                <span class="nav-label">SOPORTE</span>
+                <span class="nav-label" data-i18n="support">SOPORTE</span>
                 <nav>
                     <a href="configuracion.html" class="nav-item active">
-                        <i class="ph ph-gear icon"></i> Configuración
+                        <i class="ph ph-gear icon"></i> <span data-i18n="settings">Configuración</span>
                     </a>
                     <a href="#" class="nav-item">
-                        <i class="ph ph-question icon"></i> Ayuda
+                        <i class="ph ph-question icon"></i> <span data-i18n="help">Ayuda</span>
                     </a>
                 </nav>
             </div>
@@ -170,19 +182,19 @@
                 <div class="section-header">
                     <div class="header-title">
                         <i class="ph ph-gear"></i>
-                        <h3>Configuración del Sistema</h3>
+                        <h3 data-i18n="sys_settings">Configuración del Sistema</h3>
                     </div>
                 </div>
 
                 <div class="settings-card">
                     <div class="settings-header">
                         <i class="ph ph-palette"></i>
-                        <h3>Apariencia</h3>
+                        <h3 data-i18n="appearance">Apariencia</h3>
                     </div>
                     <div class="setting-item">
                         <div class="setting-info">
-                            <h4>Modo Claro</h4>
-                            <p>Cambia el aspecto visual de la aplicación a tonos claros.</p>
+                            <h4 data-i18n="theme">Modo Claro</h4>
+                            <p data-i18n="theme_desc">Cambia el aspecto visual de la aplicación a tonos claros.</p>
                         </div>
                         <label class="switch">
                             <input type="checkbox" id="themeToggle">
@@ -194,16 +206,17 @@
                 <div class="settings-card">
                     <div class="settings-header">
                         <i class="ph ph-globe"></i>
-                        <h3>Idioma y Región</h3>
+                        <h3 data-i18n="lang_region">Idioma y Región</h3>
                     </div>
                     <!-- Language selector to be implemented in the next step -->
                     <div class="setting-item">
                         <div class="setting-info">
-                            <h4>Idioma de la interfaz</h4>
-                            <p>Selecciona el idioma preferido para la aplicación.</p>
+                            <h4 data-i18n="language">Idioma de la interfaz</h4>
+                            <p data-i18n="lang_desc">Selecciona el idioma preferido para la aplicación.</p>
                         </div>
                         <div class="select-wrapper" style="width: 200px;">
-                            <select id="languageSelect" class="modern-form" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); background-color: rgba(15, 23, 42, 0.5); color: white;">
+                            <select id="languageSelect" class="modern-form"
+                                style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); background-color: rgba(15, 23, 42, 0.5); color: white;">
                                 <option value="es" selected>Español</option>
                                 <option value="en">English</option>
                             </select>
@@ -231,6 +244,8 @@
             window.location.href = "login.html";
         }
     </script>
+    <script src="js/i18n.js"></script>
     <script src="js/configuracion.js"></script>
 </body>
+
 </html>

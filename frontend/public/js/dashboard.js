@@ -82,12 +82,13 @@ function renderIncidents(incidents) {
     let userIncidents = incidents.filter(i => i.reportedBy && i.reportedBy._id === userId);
 
     const filterVal = document.getElementById("filterStatus")?.value || 'all';
-    if(filterVal !== 'all') {
+    if (filterVal !== 'all') {
         userIncidents = userIncidents.filter(i => i.validationStatus === filterVal);
     }
 
     if (userIncidents.length === 0) {
-        list.innerHTML = "<p style='padding: 20px; color: var(--text-muted);'>No tienes incidentes reportados para este filtro.</p>";
+        list.innerHTML = "<p style='padding: 20px; color: var(--text-muted);' data-i18n='empty_list'>No tienes incidentes reportados para este filtro.</p>";
+        applyLanguage(localStorage.getItem('lang') || 'es');
         return;
     }
 
@@ -95,17 +96,17 @@ function renderIncidents(incidents) {
         const item = document.createElement("div");
         item.className = "incident-item";
 
-        let statusTxt = "";
+        let statusKey = "";
         let badgeClass = "";
-        
+
         if (inc.validationStatus === "published") {
-            statusTxt = "Aprobado";
-            badgeClass = "resolved"; 
+            statusKey = "approved_filter";
+            badgeClass = "resolved";
         } else if (inc.validationStatus === "rejected") {
-            statusTxt = "Rechazado";
-            badgeClass = "rejected"; 
+            statusKey = "rejected_filter";
+            badgeClass = "rejected";
         } else {
-            statusTxt = "En Revisión";
+            statusKey = "st_pending";
             badgeClass = "pending";
         }
 
@@ -116,7 +117,7 @@ function renderIncidents(incidents) {
             </div>
             <div class="item-desc" title="${inc.description}">${inc.description}</div>
             <div>
-                <span class="badge ${badgeClass}">${statusTxt}</span>
+                <span class="badge ${badgeClass}" data-i18n="${statusKey}">...</span>
             </div>
             <div class="item-actions">
                 ${inc.location && inc.location.lat ? `<a href="https://maps.google.com/?q=${inc.location.lat},${inc.location.lng}" target="_blank" class="action-btn" style="background:rgba(59,130,246,0.2); color:#60a5fa;" title="Ver en Google Maps"><i class="ph ph-map-pin"></i></a>` : ''}
@@ -130,6 +131,8 @@ function renderIncidents(incidents) {
         `;
         list.appendChild(item);
     });
+
+    applyLanguage(localStorage.getItem('lang') || 'es');
 }
 
 function updateCounters(incidents) {
@@ -203,8 +206,10 @@ function editIncident(inc) {
 
     statusInput.style.display = "inline-block";
     submitBtn.textContent = "Actualizar Incidente";
+    submitBtn.setAttribute("data-i18n", "update_incident");
     cancelBtn.style.display = "inline-block";
     formTitle.textContent = "Editar Incidente";
+    formTitle.setAttribute("data-i18n", "edit_incident");
 
     if (inc.location && inc.location.lat) {
         placeMarker({ lat: inc.location.lat, lng: inc.location.lng });
@@ -222,8 +227,10 @@ function resetForm() {
     incidentId.value = "";
     statusInput.style.display = "none";
     submitBtn.textContent = "Guardar Incidente";
+    submitBtn.setAttribute("data-i18n", "save_incident");
     cancelBtn.style.display = "none";
     formTitle.textContent = "Reportar Nuevo Incidente";
+    formTitle.setAttribute("data-i18n", "report_incident");
 
     if (marker) map.removeLayer(marker);
     marker = null;
