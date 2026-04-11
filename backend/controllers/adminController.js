@@ -65,7 +65,12 @@ exports.deleteIncidentType = async (req, res) => {
 
 exports.getPendingIncidents = async (req, res) => {
     try {
-        const incidents = await Incident.find({ validationStatus: 'pending' }).populate('reportedBy', 'name email');
+        const incidents = await Incident.find({ validationStatus: 'pending' })
+            .populate('reportedBy', 'name email')
+            .populate('incidentType', 'name')
+            .populate('provinceId', 'name')
+            .populate('municipalityId', 'name')
+            .populate('neighborhoodId', 'name');
         res.json(incidents);
     } catch(e) { res.status(500).json({error: e.message}); }
 };

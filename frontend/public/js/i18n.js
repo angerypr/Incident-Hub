@@ -53,7 +53,24 @@ const translations = {
         st_progress: "En progreso",
         st_resolved: "Resuelto",
         title_placeholder: "Ej. Caída de red en piso 3...",
-        desc_placeholder: "Describe los detalles, lugar y alcance del incidente..."
+        desc_placeholder: "Describe los detalles, lugar y alcance del incidente...",
+        options: "OPCIONES",
+        stats: "Estadísticas",
+        catalogs: "Catálogos",
+        validations: "Validaciones",
+        merge_reports: "Fusionar Reportes",
+        active_users: "Usuarios Activos",
+        total_reports: "Total Reportes",
+        pending_validations: "Pendientes Validación",
+        published: "Publicados",
+        provinces: "Provincias",
+        municipalities: "Municipios",
+        neighborhoods: "Barrios",
+        categories: "Categorías",
+        merge_selected: "Fusionar Seleccionados",
+        back_home: "Volver al Inicio",
+        published_reports: "Reportes Publicados",
+        pending_merge: "Fusionar Reportes Pendientes"
     },
     en: {
         dashboard: "Dashboard",
@@ -109,7 +126,25 @@ const translations = {
         st_progress: "In progress",
         st_resolved: "Resolved",
         title_placeholder: "E.g. Network down on 3rd floor...",
-        desc_placeholder: "Describe the details, location and scope of the incident..."
+        title_placeholder: "E.g. Network down on 3rd floor...",
+        desc_placeholder: "Describe the details, location and scope of the incident...",
+        options: "OPTIONS",
+        stats: "Statistics",
+        catalogs: "Catalogs",
+        validations: "Validations",
+        merge_reports: "Merge Reports",
+        active_users: "Active Users",
+        total_reports: "Total Reports",
+        pending_validations: "Pending Validation",
+        published: "Published",
+        provinces: "Provinces",
+        municipalities: "Municipalities",
+        neighborhoods: "Neighborhoods",
+        categories: "Categories",
+        merge_selected: "Merge Selected",
+        back_home: "Back Home",
+        published_reports: "Published Reports",
+        pending_merge: "Merge Pending Reports"
     }
 };
 

@@ -14,6 +14,18 @@
 
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <style>
+        .view-section { display: none; }
+        .view-section.active { display: block; }
+        .public-card { background: var(--surface-color); border-radius: 16px; padding: 20px; box-shadow: var(--shadow-sm); border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 12px; transition: transform 0.2s, box-shadow 0.2s; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }
+        .public-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); border-color: rgba(255,255,255,0.2); }
+        .public-header { display: flex; justify-content: space-between; align-items: flex-start; }
+        .public-title { font-weight: 600; color: var(--text-primary); font-size: 15px; margin: 0; }
+        .public-date { font-size: 12px; color: var(--text-muted); }
+        .public-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.5; flex-grow: 1; margin: 0; }
+        .public-meta { display: flex; gap: 10px; font-size: 12px; color: var(--text-muted); background: rgba(0,0,0,0.2); padding: 8px 12px; border-radius: 8px; flex-wrap: wrap; }
+    </style>
 </head>
 
 <body class="dashboard-body">
@@ -29,14 +41,17 @@
             <div class="nav-section">
                 <span class="nav-label" data-i18n="general">GENERAL</span>
                 <nav>
-                    <a href="#" class="nav-item active">
+                    <a href="#" class="nav-item active" data-target="home-view">
                         <i class="ph ph-squares-four icon"></i> <span data-i18n="dashboard">Dashboard</span>
                     </a>
-                    <a href="#" class="nav-item">
-                        <i class="ph ph-list-dashes icon"></i> <span data-i18n="incidents">Incidencias</span>
+                    <a href="#" class="nav-item" data-target="report-view">
+                        <i class="ph ph-plus-circle icon"></i> <span data-i18n="report_incident">Reportar</span>
+                    </a>
+                    <a href="#" class="nav-item" data-target="public-incidents-view">
+                        <i class="ph ph-list-dashes icon"></i> <span data-i18n="incidents">Incidencias Generales</span>
                     </a>
                     <a href="#" class="nav-item">
-                        <i class="ph ph-chart-line-up icon"></i> <span data-i18n="reports">Reportes</span>
+                        <i class="ph ph-chart-line-up icon"></i> <span data-i18n="reports">Tus Reportes</span>
                     </a>
                 </nav>
             </div>
@@ -72,10 +87,9 @@
         <main class="main-content">
 
             <header class="topbar">
-                <div class="search-bar">
-                    <i class="ph ph-magnifying-glass icon"></i>
-                    <input type="text" data-i18n="search_placeholder"
-                        placeholder="Buscar un incidente o reporte... (Ctrl+K)">
+                <div class="greeting-zone">
+                    <h2 style="margin: 0; font-size: 1.3rem; color: var(--text-primary); font-weight: 600;">¡Hola de nuevo! <span id="topbarUserName" style="color: #60a5fa;"></span> 👋</h2>
+                    <p style="margin: 0; margin-top: 4px; font-size: 0.9rem; color: var(--text-muted);">Bienvenido a tu panel de control y seguimiento de incidencias.</p>
                 </div>
                 <div class="topbar-actions">
                     <div class="date-range">
@@ -87,57 +101,57 @@
             </header>
 
             <div class="dashboard-content">
+                <div id="home-view" class="view-section active">
+                    
+                    <div class="dashboard-header-stats" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 30px;">
+                        <div class="hero-card" style="margin-bottom: 0; display: flex; flex-direction: column; justify-content: space-between;">
+                            <div class="hero-info">
+                                <h4 data-i18n="total_incidents" style="color: rgba(255,255,255,0.7); font-weight: 500;">Tus Reportes Históricos</h4>
+                                <h1 id="heroTotalIncidents" style="font-size: 3rem; margin: 10px 0;">0</h1>
+                                <span class="trend positive" style="display:inline-block; margin-top:5px;"><i class="ph ph-info"></i> Registrados por ti</span>
+                            </div>
+                            <div class="hero-actions" style="margin-top: 20px;">
+                                <button class="btn-primary" onclick="document.querySelector('[data-target=\'report-view\']').click();" style="width: 100%; justify-content: center; padding: 12px; border-radius: 12px; font-weight: 600;">
+                                    <i class="ph ph-plus-circle" style="font-size: 20px;"></i> <span data-i18n="new">Nuevo Reporte</span>
+                                </button>
+                            </div>
+                        </div>
 
-                <div class="hero-card">
-                    <div class="hero-info">
-                        <h4 data-i18n="total_incidents">Total de Incidencias Registradas</h4>
-                        <h1>1,248</h1>
-                        <span class="trend positive"><i class="ph ph-trend-up"></i> 12.5%</span>
-                    </div>
-                    <div class="hero-actions">
-                        <button class="btn-primary" onclick="document.getElementById('incidentTitle').focus()">
-                            <i class="ph ph-plus"></i> <span data-i18n="new">Nueva</span>
-                        </button>
-                        <button class="btn-secondary">
-                            <i class="ph ph-download-simple"></i> <span data-i18n="export">Exportar</span>
-                        </button>
-                    </div>
-                </div>
+                        <div class="stat-card" style="display: flex; flex-direction: column; justify-content: center;">
+                            <div class="stat-header">
+                                <div class="icon-wrapper green-bg"><i class="ph ph-check-circle"></i></div>
+                                <span data-i18n="approved">Aprobadas / Resueltas</span>
+                            </div>
+                            <div class="stat-body" style="margin-top: auto;">
+                                <h2>0</h2>
+                                <span class="trend positive"><i class="ph ph-trend-up"></i> Validadas públicamente</span>
+                            </div>
+                        </div>
 
-                <div class="stats-row">
-                    <div class="stat-card">
-                        <div class="stat-header">
-                            <div class="icon-wrapper green-bg"><i class="ph ph-check-circle"></i></div>
-                            <span data-i18n="approved">Aprobadas / Resueltas</span>
+                        <div class="stat-card" style="display: flex; flex-direction: column; justify-content: center;">
+                            <div class="stat-header">
+                                <div class="icon-wrapper yellow-bg"><i class="ph ph-hourglass-high"></i></div>
+                                <span data-i18n="pending">Pendientes Validación</span>
+                            </div>
+                            <div class="stat-body" style="margin-top: auto;">
+                                <h2>0</h2>
+                                <span class="trend" style="color: #fbbf24;"><i class="ph ph-clock"></i> En revisión por admin</span>
+                            </div>
                         </div>
-                        <div class="stat-body">
-                            <h2>842</h2>
-                            <span class="trend positive"><i class="ph ph-trend-up"></i> 8.4%</span>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-header">
-                            <div class="icon-wrapper yellow-bg"><i class="ph ph-hourglass-high"></i></div>
-                            <span data-i18n="pending">Pendientes de Validación</span>
-                        </div>
-                        <div class="stat-body">
-                            <h2>315</h2>
-                            <span class="trend negative"><i class="ph ph-trend-down"></i> 2.1%</span>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-header">
-                            <div class="icon-wrapper red-bg"><i class="ph ph-x-circle"></i></div>
-                            <span data-i18n="critical">Reportes Rechazados</span>
-                        </div>
-                        <div class="stat-body">
-                            <h2>91</h2>
-                            <span class="trend negative"><i class="ph ph-trend-up"></i> 15.2%</span>
-                        </div>
-                    </div>
-                </div>
 
-                <div class="crud-section">
+                        <div class="stat-card" style="display: flex; flex-direction: column; justify-content: center;">
+                            <div class="stat-header">
+                                <div class="icon-wrapper red-bg"><i class="ph ph-x-circle"></i></div>
+                                <span data-i18n="critical">Reportes Rechazados</span>
+                            </div>
+                            <div class="stat-body" style="margin-top: auto;">
+                                <h2>0</h2>
+                                <span class="trend negative"><i class="ph ph-warning"></i> Requieren tu atención</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="crud-section" style="display: block;">
 
                     <div class="list-container">
                         <div class="section-header">
@@ -170,31 +184,79 @@
 
                         </div>
                     </div>
+                </div> <!-- END crud-section -->
+                </div> <!-- END home-view -->
 
-
-                    <div class="form-container">
-                        <div class="section-header">
+                <div id="report-view" class="view-section">
+                    <div id="shared-form-container" class="form-container" style="max-width: 800px; margin: 0 auto; box-shadow: 0 10px 25px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.05); padding: 30px; border-radius: 20px;">
+                        <div class="section-header" style="margin-bottom: 25px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px;">
                             <div class="header-title">
-                                <i class="ph ph-file-plus"></i>
-                                <h3 id="formTitle" data-i18n="report_incident">Reportar Incidente</h3>
+                                <i class="ph ph-file-plus" style="font-size: 28px; color: #10b981;"></i>
+                                <h3 id="formTitle" data-i18n="report_incident" style="font-size: 1.5rem; margin:0;">Reportar Incidente</h3>
                             </div>
+                            <p style="color: var(--text-muted); margin-top: 5px; font-size: 13px;">Proporciona todos los detalles precisos sobre la emergencia o irregularidad.</p>
                         </div>
 
                         <form id="incidentForm" class="modern-form">
                             <input type="hidden" id="incidentId">
 
-                            <div class="input-group">
-                                <label for="incidentTitle" data-i18n="incident_title_label">Título del Incidente</label>
-                                <input type="text" id="incidentTitle" data-i18n="title_placeholder"
-                                    placeholder="Ej. Caída de red en piso 3..." required>
+                            <div class="form-row">
+                                <div class="input-group flex-1">
+                                    <label for="incidentTitle" data-i18n="incident_title_label">Título del Incidente</label>
+                                    <input type="text" id="incidentTitle" data-i18n="title_placeholder"
+                                        placeholder="Ej. Accidente de tráfico..." required>
+                                </div>
+                                <div class="input-group flex-1">
+                                    <label for="incidentDate" data-i18n="incident_date_label">Fecha de Ocurrencia</label>
+                                    <input type="datetime-local" id="incidentDate" required>
+                                </div>
                             </div>
 
                             <div class="input-group">
-                                <label for="incidentDescription" data-i18n="incident_desc_label">Descripción
-                                    Detallada</label>
+                                <label for="incidentTypeSelect" data-i18n="incident_type_label">Tipo de Incidencia</label>
+                                <div class="select-wrapper">
+                                    <select id="incidentTypeSelect" required>
+                                        <option value="">Seleccione un tipo...</option>
+                                    </select>
+                                    <i class="ph ph-caret-down"></i>
+                                </div>
+                            </div>
+
+                            <div class="input-group">
+                                <label for="incidentDescription" data-i18n="incident_desc_label">Descripción Detallada</label>
                                 <textarea id="incidentDescription" data-i18n-placeholder="desc_placeholder"
-                                    placeholder="Describe los detalles, lugar y alcance del incidente..."
-                                    required></textarea>
+                                    placeholder="Describe los detalles..."
+                                    required rows="4"></textarea>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="input-group flex-1">
+                                    <label for="incidentProvince" data-i18n="incident_province_label">Provincia</label>
+                                    <div class="select-wrapper">
+                                        <select id="incidentProvince" required>
+                                            <option value="">Seleccione provincia...</option>
+                                        </select>
+                                        <i class="ph ph-caret-down"></i>
+                                    </div>
+                                </div>
+                                <div class="input-group flex-1">
+                                    <label for="incidentMunicipality" data-i18n="incident_municipality_label">Municipio</label>
+                                    <div class="select-wrapper">
+                                        <select id="incidentMunicipality" required disabled>
+                                            <option value="">Seleccione municipio...</option>
+                                        </select>
+                                        <i class="ph ph-caret-down"></i>
+                                    </div>
+                                </div>
+                                <div class="input-group flex-1">
+                                    <label for="incidentNeighborhood" data-i18n="incident_neighborhood_label">Barrio</label>
+                                    <div class="select-wrapper">
+                                        <select id="incidentNeighborhood" required disabled>
+                                            <option value="">Seleccione barrio...</option>
+                                        </select>
+                                        <i class="ph ph-caret-down"></i>
+                                    </div>
+                                </div>
                             </div>
 
                             <div class="form-row">
@@ -222,30 +284,71 @@
                                 </div>
                             </div>
 
+                            <div class="form-row">
+                                <div class="input-group flex-1">
+                                    <label for="incidentDeaths" data-i18n="incident_deaths_label">Muertos (0 si ninguno)</label>
+                                    <input type="number" id="incidentDeaths" min="0" value="0" required>
+                                </div>
+                                <div class="input-group flex-1">
+                                    <label for="incidentInjured" data-i18n="incident_injured_label">Heridos (0 si ninguno)</label>
+                                    <input type="number" id="incidentInjured" min="0" value="0" required>
+                                </div>
+                            </div>
+
                             <div class="input-group">
-                                <label data-i18n="incident_location_label">Ubicación Geográfica</label>
+                                <label for="incidentSocialLink" data-i18n="incident_link_label">Link / Red Social (Opcional)</label>
+                                <input type="url" id="incidentSocialLink" placeholder="https://facebook.com/...">
+                            </div>
+
+                            <div class="input-group">
+                                <label for="incidentImage" data-i18n="incident_img_label">Imagen (Opcional)</label>
+                                <input type="file" id="incidentImage" accept="image/*" style="background: rgba(0,0,0,0.2); padding: 12px; border-radius: 8px;">
+                            </div>
+
+                            <div class="input-group">
+                                <label data-i18n="incident_location_label">Ubicación Geográfica en Mapa</label>
                                 <div id="mapSelector"
-                                    style="height: 180px; width: 100%; border-radius: 8px; border: 1px solid var(--border-color); z-index: 1;">
+                                    style="height: 350px; width: 100%; border-radius: 12px; border: 1px solid var(--border-color); z-index: 1; box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);">
                                 </div>
                                 <input type="hidden" id="incidentLat">
                                 <input type="hidden" id="incidentLng">
                                 <small
-                                    style="color: var(--text-muted); font-size: 12px; margin-top: 5px; display: block;"
-                                    data-i18n="map_instruction">*Haz
-                                    click en el mapa para marcar el punto del incidente.</small>
+                                    style="color: var(--text-muted); font-size: 13px; margin-top: 8px; display: block;"
+                                    data-i18n="map_instruction">*Haz click en el mapa para marcar exactamente el punto de los hechos.</small>
                             </div>
 
-                            <div class="form-actions">
-                                <button type="submit" id="submitBtn" class="btn-primary full-width"
-                                    data-i18n="save_incident">
+                            <div id="formActionsContainer" class="form-actions" style="margin-top: 30px; display: flex; gap: 15px;">
+                                <button type="submit" id="submitBtn" class="btn-primary"
+                                    data-i18n="save_incident" style="flex: 2; padding: 15px; font-size: 16px;">
                                     Guardar Incidente
                                 </button>
-                                <button type="button" id="cancelBtn" class="btn-secondary full-width"
-                                    style="display: none;" onclick="resetForm()" data-i18n="cancel_edit">
+                                <button type="button" id="cancelBtn" class="btn-secondary"
+                                    style="display: none; flex: 1; padding: 15px; font-size: 16px;" onclick="document.querySelector('[data-target=\'home-view\']').click(); resetForm();" data-i18n="cancel_edit">
                                     Cancelar Edición
                                 </button>
                             </div>
                         </form>
+                    </div>
+                </div>
+
+                <div id="public-incidents-view" class="view-section">
+                    <div class="section-header" style="margin-bottom: 20px;">
+                        <div class="header-title">
+                            <i class="ph ph-globe-hemisphere-west" style="font-size: 24px; color: #60a5fa;"></i>
+                            <h3 style="margin:0; font-size:1.2rem; color:var(--text-primary);">Incidencias Registradas Globales</h3>
+                        </div>
+                    </div>
+                    
+                    <div class="public-filters" style="margin-bottom: 25px; display: flex; gap: 15px; flex-wrap: wrap;">
+                        <div style="flex: 1; min-width: 250px; position: relative;">
+                            <i class="ph ph-magnifying-glass" style="position: absolute; left: 15px; top: 15px; color: var(--text-muted); font-size: 18px;"></i>
+                            <input type="text" id="publicSearchInput" placeholder="Buscar por palabra clave, ubicación, resumen o tipo de reporte..." style="width: 100%; padding: 12px 15px 12px 42px; border-radius: 12px; background: rgba(15,23,42,0.6); border: 1px solid rgba(255,255,255,0.1); color: white; outline: none; font-family: 'Poppins'; transition: border 0.3s;" onfocus="this.style.borderColor='rgba(96,165,250,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'">
+                        </div>
+                    </div>
+
+                    <div id="globalIncidentsMap" style="height: 350px; width: 100%; border-radius: 12px; margin-bottom: 25px; border: 1px solid rgba(255,255,255,0.1); box-shadow: inset 0 2px 4px rgba(0,0,0,0.3); z-index: 1;"></div>
+
+                    <div id="public-incidents-container" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px;">
                     </div>
                 </div>
 

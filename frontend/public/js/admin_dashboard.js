@@ -2,8 +2,10 @@ document.addEventListener("DOMContentLoaded", () => {
     initNavigation();
     loadStats();
     loadCatalogs();
+    loadCatalogs();
     loadValidations();
     loadMergeOptions();
+    initSettings();
 });
 
 function initNavigation() {
@@ -25,8 +27,44 @@ function initNavigation() {
             if(item.dataset.target === 'validations-view') loadValidations();
             if(item.dataset.target === 'merge-view') loadMergeOptions();
             if(item.dataset.target === 'catalogs-view') loadCatalogs();
+            if(item.dataset.target === 'catalogs-view') loadCatalogs();
         });
     });
+}
+
+function initSettings() {
+    const themeToggle = document.getElementById("themeToggle");
+    if (themeToggle) {
+        if (localStorage.getItem("theme") === "light") {
+            themeToggle.checked = true;
+            document.documentElement.classList.add("light-mode");
+        }
+
+        themeToggle.addEventListener("change", (e) => {
+            if (e.target.checked) {
+                document.documentElement.classList.add("light-mode");
+                localStorage.setItem("theme", "light");
+            } else {
+                document.documentElement.classList.remove("light-mode");
+                localStorage.setItem("theme", "dark");
+            }
+        });
+    }
+
+    const languageSelect = document.getElementById("languageSelect");
+    if (languageSelect) {
+        if (localStorage.getItem("lang")) {
+            languageSelect.value = localStorage.getItem("lang");
+        }
+        
+        languageSelect.addEventListener("change", (e) => {
+            const lang = e.target.value;
+            localStorage.setItem("lang", lang);
+            if(window.applyLanguage) {
+                window.applyLanguage(lang);
+            }
+        });
+    }
 }
 
 async function loadStats() {
@@ -311,11 +349,12 @@ window.openValidationDetails = function(id) {
 
     let modalHtml = `
     <div id="details-modal" style="position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 9999; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);">
-        <div style="background: rgba(30, 41, 59, 0.75); padding: 30px; border-radius: 20px; width: 600px; max-width: 90%; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);">
+        <div style="background: rgba(30, 41, 59, 0.75); padding: 30px; border-radius: 20px; width: 600px; max-width: 90%; max-height: 90vh; overflow-y: auto; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);">
             <div style="display:flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px;">
                 <div>
                     <h3 style="margin: 0 0 5px 0; font-size: 20px; color: #ffffff;">${inc.title}</h3>
-                    <p style="margin: 0; font-size: 13px; color: #94a3b8;"><i class="ph ph-calendar"></i> ${new Date(inc.createdAt || Date.now()).toLocaleString()}</p>
+                    <p style="margin: 0; font-size: 13px; color: #94a3b8;"><i class="ph ph-calendar"></i> Reportado el: ${new Date(inc.createdAt || Date.now()).toLocaleString()}</p>
+                    ${inc.occurrenceDate ? `<p style="margin: 0; font-size: 13px; color: #94a3b8;"><i class="ph ph-clock"></i> Ocurrió el: ${new Date(inc.occurrenceDate).toLocaleString()}</p>` : ''}
                 </div>
                 <button onclick="document.getElementById('details-modal').remove()" style="background:none; border:none; font-size: 24px; cursor: pointer; color: #94a3b8;"><i class="ph ph-x"></i></button>
             </div>
@@ -327,18 +366,42 @@ window.openValidationDetails = function(id) {
 
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 30px; background: rgba(15, 23, 42, 0.4); padding: 16px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);">
                 <div>
-                    <h5 style="margin: 0 0 4px 0; color: #94a3b8; font-size: 12px; text-transform: uppercase;">Ubicacion</h5>
-                    <p style="margin: 0; font-size: 14px; color: #f8fafc; font-weight: 500;">${locString}</p>
-                </div>
-                <div>
-                    <h5 style="margin: 0 0 4px 0; color: #94a3b8; font-size: 12px; text-transform: uppercase;">Reportado por</h5>
-                    <p style="margin: 0; font-size: 14px; color: #f8fafc; font-weight: 500;">${inc.reportedBy?.email || 'Anonimo'}</p>
+                    <h5 style="margin: 0 0 4px 0; color: #94a3b8; font-size: 12px; text-transform: uppercase;">Tipo / Categoria</h5>
+                    <p style="margin: 0; font-size: 14px; color: #f8fafc; font-weight: 500;">${inc.incidentType?.name || 'No especificado'}</p>
                 </div>
                 <div>
                     <h5 style="margin: 0 0 4px 0; color: #94a3b8; font-size: 12px; text-transform: uppercase;">Prioridad</h5>
                     <p style="margin: 0; font-size: 14px; color: #f8fafc; font-weight: 500;">${inc.priority || 'Normal'}</p>
                 </div>
+                <div style="grid-column: 1 / -1;">
+                    <h5 style="margin: 0 0 4px 0; color: #94a3b8; font-size: 12px; text-transform: uppercase;">Ubicacion y Mapa</h5>
+                    <p style="margin: 0; font-size: 14px; color: #f8fafc; font-weight: 500;">
+                        ${inc.provinceId?.name || 'N/A'} > ${inc.municipalityId?.name || 'N/A'} > ${inc.neighborhoodId?.name || 'N/A'}
+                        <br><span style="color: #64748b; font-size: 12px;">(Coords: ${locString})</span>
+                    </p>
+                </div>
+                <div>
+                    <h5 style="margin: 0 0 4px 0; color: #94a3b8; font-size: 12px; text-transform: uppercase;">Víctimas Reportadas</h5>
+                    <p style="margin: 0; font-size: 14px; color: #f8fafc; font-weight: 500;"><span style="color:#ef4444;">Muertos: ${inc.deaths || 0}</span> | <span style="color:#eab308;">Heridos: ${inc.injured || 0}</span></p>
+                </div>
+                <div>
+                    <h5 style="margin: 0 0 4px 0; color: #94a3b8; font-size: 12px; text-transform: uppercase;">Enlace Fuente / Social</h5>
+                    <p style="margin: 0; font-size: 14px; font-weight: 500;">
+                        ${inc.socialLink ? `<a href="${inc.socialLink}" target="_blank" style="color: #60a5fa; text-decoration: none;"><i class="ph ph-link"></i> Ver Enlace</a>` : '<span style="color: #64748b;">No adjunto</span>'}
+                    </p>
+                </div>
+                <div style="grid-column: 1 / -1; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 10px; margin-top: 5px;">
+                    <h5 style="margin: 0 0 4px 0; color: #94a3b8; font-size: 12px; text-transform: uppercase;">Reportado por</h5>
+                    <p style="margin: 0; font-size: 14px; color: #f8fafc; font-weight: 500;"><i class="ph ph-user"></i> ${inc.reportedBy?.email || 'Anonimo'}</p>
+                </div>
             </div>
+
+            ${inc.imageBase64 ? `
+            <div style="margin-bottom: 20px; text-align: center; border: 1px dashed rgba(255,255,255,0.1); padding: 10px; border-radius: 12px; background: rgba(0,0,0,0.2);">
+                <h5 style="margin: 0 0 8px 0; color: #cbd5e1; font-size: 13px; text-transform: uppercase; font-weight: 600; text-align: left;">Imagen Adjunta</h5>
+                <img src="${inc.imageBase64}" style="max-width: 100%; border-radius: 8px; max-height: 250px; object-fit: contain;">
+            </div>
+            ` : ''}
 
             <div style="display:flex; gap: 12px; padding-top: 15px; border-top: 1px dashed rgba(255,255,255,0.1);">
                 <button class="btn-flex btn-approve" onclick="document.getElementById('details-modal').remove(); publishIncident('${inc._id}')" style="padding: 12px; font-size: 15px; background: rgba(34,197,94,0.2); color: #4ade80; border: 1px solid rgba(34,197,94,0.3);"><i class="ph ph-check-circle" style="font-size: 20px;"></i> Aprobar Reporte</button>
@@ -465,10 +528,14 @@ window.promptMergeSelected = async function() {
     };
 };
 
+window._publishedIncidentsData = [];
+
 async function loadPublished() {
     const res = await fetch('http://localhost:3000/api/incidents');
     const data = await res.json();
     const published = data.filter(inc => inc.validationStatus === 'published');
+    window._publishedIncidentsData = published;
+    
     const container = document.getElementById('published-container');
     container.innerHTML = '';
 
@@ -480,12 +547,12 @@ async function loadPublished() {
     published.forEach(inc => {
         const locString = inc.location && inc.location.lat ? inc.location.lat + ', ' + inc.location.lng : 'N/A';
         container.innerHTML += `
-            <div class="incident-card">
+            <div class="incident-card" style="cursor: pointer;" onclick="window.openPublishedDetails('${inc._id}')">
                 <div class="incident-header">
                     <h4 class="incident-title">${inc.title}</h4>
                     <span class="incident-date" style="color:#10b981; font-size:12px; font-weight: 500; display:flex; align-items:center; gap:4px;"><i class="ph ph-check-circle"></i> Publicado</span>
                 </div>
-                <p class="incident-desc">${inc.description}</p>
+                <p class="incident-desc">${inc.description.substring(0, 100)}...</p>
                 <div class="incident-meta" style="flex-wrap: wrap;">
                     <span style="display:flex; align-items:center; gap:4px;"><i class="ph ph-user"></i> ${inc.reportedBy?.email || 'Anonimo'}</span>
                     <span style="display:flex; align-items:center; gap:4px; margin-left: auto;"><i class="ph ph-map-pin"></i> ${locString}</span>
@@ -500,6 +567,90 @@ window.showPublishedView = function() {
     document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
     document.getElementById('published-view').classList.add('active');
     document.getElementById('view-title').textContent = 'Reportes Publicados';
+};
+
+window.deletePublishedIncident = async function(id) {
+    if(!confirm("¿Estás seguro de eliminar permanentemente este incidente publicado?")) return;
+    try {
+        await fetch(`http://localhost:3000/api/incidents/${id}`, { method: 'DELETE' });
+        loadPublished();
+        loadStats();
+    } catch(e) { console.error(e); }
+};
+
+window.openPublishedDetails = function(id) {
+    const inc = window._publishedIncidentsData.find(i => i._id === id);
+    if(!inc) return;
+
+    const existingModal = document.getElementById('details-modal');
+    if(existingModal) existingModal.remove();
+
+    const locString = inc.location && inc.location.lat ? inc.location.lat + ', ' + inc.location.lng : 'No especificada';
+
+    let modalHtml = `
+    <div id="details-modal" style="position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 9999; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);">
+        <div style="background: rgba(30, 41, 59, 0.75); padding: 30px; border-radius: 20px; width: 600px; max-width: 90%; max-height: 90vh; overflow-y: auto; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);">
+            <div style="display:flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px;">
+                <div>
+                    <h3 style="margin: 0 0 5px 0; font-size: 20px; color: #ffffff;">${inc.title} <span style="display:inline-block; font-size:12px; font-weight:normal; background: rgba(16,185,129,0.2); color:#10b981; padding:2px 8px; border-radius:12px; margin-left:8px; vertical-align:middle;">Publicado</span></h3>
+                    <p style="margin: 0; font-size: 13px; color: #94a3b8;"><i class="ph ph-calendar"></i> Reportado el: ${new Date(inc.createdAt || Date.now()).toLocaleString()}</p>
+                    ${inc.occurrenceDate ? `<p style="margin: 0; font-size: 13px; color: #94a3b8;"><i class="ph ph-clock"></i> Ocurrió el: ${new Date(inc.occurrenceDate).toLocaleString()}</p>` : ''}
+                </div>
+                <button onclick="document.getElementById('details-modal').remove()" style="background:none; border:none; font-size: 24px; cursor: pointer; color: #94a3b8;"><i class="ph ph-x"></i></button>
+            </div>
+            
+            <div style="margin-bottom: 20px;">
+                <h5 style="margin: 0 0 8px 0; color: #cbd5e1; font-size: 13px; text-transform: uppercase; font-weight: 600;">Descripcion</h5>
+                <p style="margin: 0; font-size: 15px; color: #f8fafc; line-height: 1.6;">${inc.description}</p>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 30px; background: rgba(15, 23, 42, 0.4); padding: 16px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);">
+                <div>
+                    <h5 style="margin: 0 0 4px 0; color: #94a3b8; font-size: 12px; text-transform: uppercase;">Tipo / Categoria</h5>
+                    <p style="margin: 0; font-size: 14px; color: #f8fafc; font-weight: 500;">${inc.incidentType?.name || 'No especificado'}</p>
+                </div>
+                <div>
+                    <h5 style="margin: 0 0 4px 0; color: #94a3b8; font-size: 12px; text-transform: uppercase;">Prioridad</h5>
+                    <p style="margin: 0; font-size: 14px; color: #f8fafc; font-weight: 500;">${inc.priority || 'Normal'}</p>
+                </div>
+                <div style="grid-column: 1 / -1;">
+                    <h5 style="margin: 0 0 4px 0; color: #94a3b8; font-size: 12px; text-transform: uppercase;">Ubicacion y Mapa</h5>
+                    <p style="margin: 0; font-size: 14px; color: #f8fafc; font-weight: 500;">
+                        ${inc.provinceId?.name || 'N/A'} > ${inc.municipalityId?.name || 'N/A'} > ${inc.neighborhoodId?.name || 'N/A'}
+                        <br><span style="color: #64748b; font-size: 12px;">(Coords: ${locString})</span>
+                    </p>
+                </div>
+                <div>
+                    <h5 style="margin: 0 0 4px 0; color: #94a3b8; font-size: 12px; text-transform: uppercase;">Víctimas Reportadas</h5>
+                    <p style="margin: 0; font-size: 14px; color: #f8fafc; font-weight: 500;"><span style="color:#ef4444;">Muertos: ${inc.deaths || 0}</span> | <span style="color:#eab308;">Heridos: ${inc.injured || 0}</span></p>
+                </div>
+                <div>
+                    <h5 style="margin: 0 0 4px 0; color: #94a3b8; font-size: 12px; text-transform: uppercase;">Enlace Fuente / Social</h5>
+                    <p style="margin: 0; font-size: 14px; font-weight: 500;">
+                        ${inc.socialLink ? `<a href="${inc.socialLink}" target="_blank" style="color: #60a5fa; text-decoration: none;"><i class="ph ph-link"></i> Ver Enlace</a>` : '<span style="color: #64748b;">No adjunto</span>'}
+                    </p>
+                </div>
+                <div style="grid-column: 1 / -1; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 10px; margin-top: 5px;">
+                    <h5 style="margin: 0 0 4px 0; color: #94a3b8; font-size: 12px; text-transform: uppercase;">Reportado por</h5>
+                    <p style="margin: 0; font-size: 14px; color: #f8fafc; font-weight: 500;"><i class="ph ph-user"></i> ${inc.reportedBy?.email || 'Anonimo'}</p>
+                </div>
+            </div>
+
+            ${inc.imageBase64 ? `
+            <div style="margin-bottom: 20px; text-align: center; border: 1px dashed rgba(255,255,255,0.1); padding: 10px; border-radius: 12px; background: rgba(0,0,0,0.2);">
+                <h5 style="margin: 0 0 8px 0; color: #cbd5e1; font-size: 13px; text-transform: uppercase; font-weight: 600; text-align: left;">Imagen Adjunta</h5>
+                <img src="${inc.imageBase64}" style="max-width: 100%; border-radius: 8px; max-height: 250px; object-fit: contain;">
+            </div>
+            ` : ''}
+
+            <div style="display:flex; justify-content: flex-end; gap: 12px; padding-top: 15px; border-top: 1px dashed rgba(255,255,255,0.1);">
+                <button class="btn-flex" onclick="document.getElementById('details-modal').remove()" style="padding: 10px 16px; font-size: 14px; background: rgba(255,255,255,0.1); color: #cbd5e1; flex: 0 1 auto; border: 1px solid rgba(255,255,255,0.2);">Cerrar Modal</button>
+                <button class="btn-flex btn-reject" onclick="document.getElementById('details-modal').remove(); deletePublishedIncident('${inc._id}')" style="padding: 10px 16px; font-size: 14px; background: rgba(239,68,68,0.2); color: #f87171; flex: 0 1 auto; border: 1px solid rgba(239,68,68,0.3);"><i class="ph ph-trash"></i> Eliminar Registro</button>
+            </div>
+        </div>
+    </div>
+    `;
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
 };
 
 window.showStatsView = function() {

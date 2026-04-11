@@ -42,6 +42,16 @@ const incidentSchema = new mongoose.Schema(
       ref: "IncidentType"
     },
 
+    provinceId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Province"
+    },
+
+    municipalityId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Municipality"
+    },
+
     neighborhoodId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Neighborhood"
@@ -50,7 +60,37 @@ const incidentSchema = new mongoose.Schema(
     location: {
       lat: { type: Number },
       lng: { type: Number }
-    }
+    },
+
+    occurrenceDate: {
+      type: Date
+    },
+
+    deaths: {
+      type: Number,
+      default: 0
+    },
+
+    injured: {
+      type: Number,
+      default: 0
+    },
+
+    socialLink: {
+      type: String
+    },
+
+    imageBase64: {
+      type: String
+    },
+
+    comments: [
+      {
+        userEmail: { type: String, required: true },
+        content: { type: String, required: true },
+        createdAt: { type: Date, default: Date.now }
+      }
+    ]
   },
   {
     timestamps: true

@@ -2,13 +2,21 @@ const Incident = require('../models/incident');
 
 exports.createIncident = async (req, res) => {
     try {
-        const { title, description, status, priority, reportedBy, location } = req.body;
+        const {
+            title, description, status, priority, reportedBy, location,
+            occurrenceDate, incidentType, provinceId, municipalityId, neighborhoodId,
+            deaths, injured, socialLink, imageBase64
+        } = req.body;
 
         if (!title || !description || !reportedBy) {
             return res.status(400).json({ message: "Title, description, and reportedBy are required" });
         }
 
-        const newIncident = new Incident({ title, description, status, priority, reportedBy, location });
+        const newIncident = new Incident({
+            title, description, status, priority, reportedBy, location,
+            occurrenceDate, incidentType, provinceId, municipalityId, neighborhoodId,
+            deaths, injured, socialLink, imageBase64
+        });
         await newIncident.save();
 
         res.status(201).json({ message: "Incident created successfully", incident: newIncident });
@@ -19,7 +27,12 @@ exports.createIncident = async (req, res) => {
 
 exports.getIncidents = async (req, res) => {
     try {
-        const incidents = await Incident.find().populate('reportedBy', 'name email');
+        const incidents = await Incident.find()
+            .populate('reportedBy', 'name email')
+            .populate('incidentType', 'name')
+            .populate('provinceId', 'name')
+            .populate('municipalityId', 'name')
+            .populate('neighborhoodId', 'name');
         res.status(200).json(incidents);
     } catch (error) {
         res.status(500).json({ message: "Error fetching incidents", error: error.message });
@@ -40,11 +53,19 @@ exports.getIncidentById = async (req, res) => {
 
 exports.updateIncident = async (req, res) => {
     try {
-        const { title, description, status, priority, location } = req.body;
-        
+        const {
+            title, description, status, priority, location,
+            occurrenceDate, incidentType, provinceId, municipalityId, neighborhoodId,
+            deaths, injured, socialLink, imageBase64
+        } = req.body;
+
         const updatedIncident = await Incident.findByIdAndUpdate(
             req.params.id,
-            { title, description, status, priority, location },
+            {
+                title, description, status, priority, location,
+                occurrenceDate, incidentType, provinceId, municipalityId, neighborhoodId,
+                deaths, injured, socialLink, imageBase64
+            },
             { new: true, runValidators: true }
         ).populate('reportedBy', 'name email');
 
@@ -69,5 +90,32 @@ exports.deleteIncident = async (req, res) => {
         res.status(200).json({ message: "Incident deleted successfully" });
     } catch (error) {
         res.status(500).json({ message: "Error deleting incident", error: error.message });
+    }
+};
+
+exports.addComment = async (req, res) => {
+    try {
+        const { userEmail, content } = req.body;
+        if (!content || !userEmail) {
+            return res.status(400).json({ message: "El contenido y el usuario son requeridos" });
+        }
+
+        const incident = await Incident.findById(req.params.id);
+        if (!incident) {
+            return res.status(404).json({ message: "Incidente no encontrado" });
+        }
+
+        incident.comments.push({ userEmail, content });
+        await incident.save();
+
+        await incident.populate('reportedBy', 'name email');
+        await incident.populate('incidentType', 'name');
+        await incident.populate('provinceId', 'name');
+        await incident.populate('municipalityId', 'name');
+        await incident.populate('neighborhoodId', 'name');
+
+        res.status(200).json({ message: "Comentario publicado agregado", incident });
+    } catch (error) {
+        res.status(500).json({ message: "Error al publicar comentario", error: error.message });
     }
 };
