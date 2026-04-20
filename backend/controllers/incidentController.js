@@ -59,14 +59,23 @@ exports.updateIncident = async (req, res) => {
             deaths, injured, socialLink, imageBase64
         } = req.body;
 
+        // Sanitize optional ObjectId fields: convert empty strings to null
+        const sanitize = (val) => (val && val.trim && val.trim() !== '' ? val : null);
+
+        const updateData = {
+            title, description, status, priority, location,
+            occurrenceDate,
+            incidentType: sanitize(incidentType),
+            provinceId: sanitize(provinceId),
+            municipalityId: sanitize(municipalityId),
+            neighborhoodId: sanitize(neighborhoodId),
+            deaths, injured, socialLink, imageBase64
+        };
+
         const updatedIncident = await Incident.findByIdAndUpdate(
             req.params.id,
-            {
-                title, description, status, priority, location,
-                occurrenceDate, incidentType, provinceId, municipalityId, neighborhoodId,
-                deaths, injured, socialLink, imageBase64
-            },
-            { new: true, runValidators: true }
+            updateData,
+            { returnDocument: 'after', runValidators: true }
         ).populate('reportedBy', 'name email');
 
         if (!updatedIncident) {
@@ -75,6 +84,7 @@ exports.updateIncident = async (req, res) => {
 
         res.status(200).json({ message: "Incident updated successfully", incident: updatedIncident });
     } catch (error) {
+        console.error("Error updating incident:", error);
         res.status(500).json({ message: "Error updating incident", error: error.message });
     }
 };
