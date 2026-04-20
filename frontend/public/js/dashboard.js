@@ -10,9 +10,9 @@ document.addEventListener("DOMContentLoaded", () => {
     if (userEmail) {
         const emailLabel = document.getElementById("userEmailLabel");
         if (emailLabel) emailLabel.textContent = userEmail;
-        
+
         const topbarName = document.getElementById("topbarUserName");
-        if(topbarName) {
+        if (topbarName) {
             // Convierte "juan@gmail.com" -> "Juan"
             const namePart = userEmail.split('@')[0];
             topbarName.textContent = namePart.charAt(0).toUpperCase() + namePart.slice(1);
@@ -24,22 +24,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.querySelectorAll('.nav-item').forEach(item => {
         item.addEventListener('click', (e) => {
-            if(item.getAttribute('href') === 'configuracion.html') return;
+            if (item.getAttribute('href') === 'configuracion.html') return;
             e.preventDefault();
             const target = item.getAttribute('data-target');
-            if(!target) return;
-            
+            if (!target) return;
+
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             item.classList.add('active');
-            
+
             document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
             document.getElementById(target).classList.add('active');
-            
+
             if (target === 'report-view') {
                 setTimeout(() => { if (map) map.invalidateSize(); }, 300);
             }
-            
-            if(target === 'public-incidents-view') {
+
+            if (target === 'public-incidents-view') {
                 setTimeout(() => { if (globalIncidentsMap) globalIncidentsMap.invalidateSize(); }, 300);
                 loadPublicIncidents();
             }
@@ -74,7 +74,7 @@ async function loadPublicIncidents() {
         const res = await fetch('http://localhost:3000/api/incidents');
         const data = await res.json();
         window._publicIncidentsData = data.filter(inc => inc.validationStatus === 'published');
-        
+
         renderPublicIncidents();
     } catch (e) {
         console.error("Error cargando incidencias públicas", e);
@@ -84,9 +84,9 @@ async function loadPublicIncidents() {
 function renderPublicIncidents(searchTerm = '') {
     const container = document.getElementById('public-incidents-container');
     container.innerHTML = '';
-    
+
     let filtered = window._publicIncidentsData;
-    
+
     if (searchTerm.trim() !== '') {
         const term = searchTerm.toLowerCase();
         filtered = filtered.filter(inc => {
@@ -96,12 +96,12 @@ function renderPublicIncidents(searchTerm = '') {
             const prov = inc.provinceId?.name?.toLowerCase() || '';
             const muni = inc.municipalityId?.name?.toLowerCase() || '';
             const neigh = inc.neighborhoodId?.name?.toLowerCase() || '';
-            
-            return t.includes(term) || d.includes(term) || type.includes(term) || 
-                   prov.includes(term) || muni.includes(term) || neigh.includes(term);
+
+            return t.includes(term) || d.includes(term) || type.includes(term) ||
+                prov.includes(term) || muni.includes(term) || neigh.includes(term);
         });
     }
-    
+
     getGlobalMap();
     if (globalMarkersLayer) globalMarkersLayer.clearLayers();
 
@@ -128,7 +128,7 @@ function renderPublicIncidents(searchTerm = '') {
 
         const locString = inc.provinceId?.name ? `${inc.provinceId.name} - ${inc.municipalityId?.name || ''}` : 'Ubicación no especificada';
 
-        
+
         container.innerHTML += `
             <div class="public-card" style="cursor: pointer;" onclick="openPublicIncidentDetails('${inc._id}')">
                 ${inc.imageBase64 ? `<img src="${inc.imageBase64}" style="width: 100%; height: 160px; object-fit: cover; border-radius: 10px; border: 1px solid rgba(255,255,255,0.05);">` : ''}
@@ -154,22 +154,22 @@ function renderPublicIncidents(searchTerm = '') {
 function obfuscateEmail(email) {
     if (!email) return 'Anónimo';
     const split = email.split('@');
-    if(split.length !== 2) return email;
+    if (split.length !== 2) return email;
     const name = split[0];
-    if(name.length <= 2) return name + '***@' + split[1];
+    if (name.length <= 2) return name + '***@' + split[1];
     return name.substring(0, 2) + '***@' + split[1];
 }
 
-window.openPublicIncidentDetails = function(id) {
+window.openPublicIncidentDetails = function (id) {
     const inc = window._publicIncidentsData.find(i => i._id === id);
-    if(!inc) return;
+    if (!inc) return;
 
     const existingModal = document.getElementById('details-modal');
-    if(existingModal) existingModal.remove();
+    if (existingModal) existingModal.remove();
 
     const locString = inc.provinceId?.name ? `${inc.provinceId.name} > ${inc.municipalityId?.name || ''} > ${inc.neighborhoodId?.name || ''}` : 'Ubicación no especificada';
     const obfuscatedAuthor = obfuscateEmail(inc.reportedBy?.email);
-    
+
     let commentsHtml = '';
     if (inc.comments && inc.comments.length > 0) {
         commentsHtml = inc.comments.map(c => `
@@ -257,29 +257,29 @@ window.openPublicIncidentDetails = function(id) {
     document.body.insertAdjacentHTML('beforeend', modalHtml);
 };
 
-window.submitPublicComment = async function(id) {
+window.submitPublicComment = async function (id) {
     const input = document.getElementById(`newCommentInput_${id}`);
     const content = input.value.trim();
     if (!content) return;
-    
+
     const userEmail = localStorage.getItem('userEmail') || 'anonimo@hub.com';
     const oldHtml = input.innerHTML;
     input.disabled = true;
-    
+
     try {
         const res = await fetch(`http://localhost:3000/api/incidents/${id}/comments`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ userEmail, content })
         });
-        if(res.ok) {
+        if (res.ok) {
             await loadPublicIncidents();
             openPublicIncidentDetails(id);
         } else {
             console.error("Error del servidor al comentar");
             input.disabled = false;
         }
-    } catch(e) {
+    } catch (e) {
         console.error("Error posteando comentario", e);
         input.disabled = false;
     }
@@ -348,18 +348,18 @@ async function fetchCatalogs() {
         types.forEach(t => {
             const opt = document.createElement("option");
             opt.value = t._id; opt.textContent = t.name;
-            if(incidentTypeSelect) incidentTypeSelect.appendChild(opt);
+            if (incidentTypeSelect) incidentTypeSelect.appendChild(opt);
         });
 
         provinces.forEach(p => {
             const opt = document.createElement("option");
             opt.value = p._id; opt.textContent = p.name;
-            if(incidentProvince) incidentProvince.appendChild(opt);
+            if (incidentProvince) incidentProvince.appendChild(opt);
         });
-    } catch(e) { console.error("Error fetching catalogs", e); }
+    } catch (e) { console.error("Error fetching catalogs", e); }
 }
 
-if(incidentProvince) {
+if (incidentProvince) {
     incidentProvince.addEventListener("change", async (e) => {
         incidentMunicipality.innerHTML = '<option value="">Seleccione municipio...</option>';
         incidentNeighborhood.innerHTML = '<option value="">Seleccione barrio...</option>';
@@ -377,11 +377,11 @@ if(incidentProvince) {
                 incidentMunicipality.appendChild(opt);
             });
             incidentMunicipality.disabled = false;
-        } catch(err) { console.error(err); }
+        } catch (err) { console.error(err); }
     });
 }
 
-if(incidentMunicipality) {
+if (incidentMunicipality) {
     incidentMunicipality.addEventListener("change", async (e) => {
         incidentNeighborhood.innerHTML = '<option value="">Seleccione barrio...</option>';
         incidentNeighborhood.disabled = true;
@@ -397,11 +397,11 @@ if(incidentMunicipality) {
                 incidentNeighborhood.appendChild(opt);
             });
             incidentNeighborhood.disabled = false;
-        } catch(err) { console.error(err); }
+        } catch (err) { console.error(err); }
     });
 }
 
-if(incidentImage) {
+if (incidentImage) {
     incidentImage.addEventListener("change", (e) => {
         const file = e.target.files[0];
         if (file) {
@@ -569,21 +569,21 @@ async function handleIncident(e) {
 function editIncident(inc) {
     incidentId.value = inc._id;
     titleInput.value = inc.title;
-    
-    if(inc.occurrenceDate) {
-        incidentDate.value = new Date(inc.occurrenceDate).toISOString().slice(0,16);
+
+    if (inc.occurrenceDate) {
+        incidentDate.value = new Date(inc.occurrenceDate).toISOString().slice(0, 16);
     } else { incidentDate.value = ""; }
-    
-    incidentTypeSelect.value = inc.incidentType || "";
+
+    incidentTypeSelect.value = inc.incidentType?._id || inc.incidentType || "";
     descInput.value = inc.description;
-    
+
     // Set priority
     priorityInput.value = inc.priority;
     statusInput.value = inc.status;
 
-    // We will attempt to set province, but cascade makes municipality and neighborhood tricky without waiting.
-    // For simplicity, we can load the province, and the user must re-select cascade if they edit.
-    incidentProvince.value = inc.provinceId || "";
+    // Extract _id from populated objects for province, then load cascading dropdowns
+    const provinceVal = inc.provinceId?._id || inc.provinceId || "";
+    incidentProvince.value = provinceVal;
     incidentMunicipality.innerHTML = '<option value="">Seleccione municipio...</option>';
     incidentMunicipality.disabled = true;
     incidentNeighborhood.innerHTML = '<option value="">Seleccione barrio...</option>';
@@ -612,7 +612,7 @@ function editIncident(inc) {
         document.getElementById('incidentLng').value = "";
     }
     document.querySelector('[data-target="report-view"]').click();
-    
+
     // Invalidate map size so it renders fully if the tab was hidden
     setTimeout(() => { if (map) map.invalidateSize(); }, 300);
 }
@@ -621,7 +621,7 @@ function resetForm() {
     incidentForm.reset();
     incidentId.value = "";
     imageBase64Data = "";
-    
+
     incidentMunicipality.innerHTML = '<option value="">Seleccione municipio...</option>';
     incidentMunicipality.disabled = true;
     incidentNeighborhood.innerHTML = '<option value="">Seleccione barrio...</option>';
