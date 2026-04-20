@@ -2,7 +2,7 @@ const { GoogleGenerativeAI } = require('@google/generative-ai');
 const path = require('path');
 require('dotenv').config({ path: path.join(__dirname, '../.env') });
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "AIzaSyBaKY_peAnumYSl0tMmoEbcJyad0TF_s4c");
 const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
 exports.chat = async (req, res) => {
