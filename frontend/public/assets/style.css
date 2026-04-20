@@ -747,7 +747,7 @@ button {
 }
 
 .edit-action {
-    background-color: rgba(245, 245, 245, 1);
+    background-color: rgba(128, 128, 128, 0.15);
     color: var(--text-primary);
 }
 
@@ -757,7 +757,7 @@ button {
 }
 
 .delete-action {
-    background-color: rgba(245, 245, 245, 1);
+    background-color: rgba(128, 128, 128, 0.15);
     color: var(--text-primary);
 }
 

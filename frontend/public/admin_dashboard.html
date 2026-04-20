@@ -19,7 +19,7 @@
         .catalog-badge { background: rgba(255,255,255,0.1); color: var(--text-secondary); font-size: 13px; font-weight: 600; padding: 4px 12px; border-radius: 20px; }
         
         .catalog-form { display: flex; gap: 10px; margin-bottom: 20px; background: rgba(0,0,0,0.2); padding: 12px; border-radius: 12px; border: 1px dashed var(--border-color); }
-        .catalog-form input, .catalog-form select { flex: 1; padding: 10px 14px; border-radius: 8px; border: 1px solid var(--border-color); font-size: 14px; outline: none; transition: border-color 0.2s, box-shadow 0.2s; font-family: 'Poppins', sans-serif; background: rgba(15,23,42,0.5); color: white; }
+        .catalog-form input, .catalog-form select { flex: 1; padding: 10px 14px; border-radius: 8px; border: 1px solid var(--border-color); font-size: 14px; outline: none; transition: border-color 0.2s, box-shadow 0.2s; font-family: 'Poppins', sans-serif; background: var(--surface-color); color: var(--text-primary); }
         .catalog-form input:focus, .catalog-form select:focus { border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(255, 87, 34, 0.1); }
         .catalog-form .btn-primary { padding: 10px 18px; border-radius: 8px; font-weight: 600; font-size: 16px; display: flex; align-items: center; justify-content: center; transition: transform 0.1s; background: linear-gradient(135deg, var(--primary-color), #d84315); color: white; border: none; }
         .catalog-form .btn-primary:active { transform: scale(0.95); }
@@ -170,7 +170,7 @@
                             </div>
                             <form id="form-province" class="catalog-form">
                                 <input type="text" id="province-name" placeholder="Nueva Provincia" required>
-                                <button type="submit" class="btn-primary" title="Anadir"><i class="ph ph-plus-bold"></i></button>
+                                <button type="submit" class="btn-primary" title="Anadir"><i class="ph ph-plus" style="font-size: 20px; font-weight: bold;"></i></button>
                             </form>
                             <ul id="list-provinces" class="catalog-list"></ul>
                         </div>
@@ -183,7 +183,7 @@
                             <form id="form-municipality" class="catalog-form">
                                 <select id="mun-province-select" required><option value="">Provincia...</option></select>
                                 <input type="text" id="municipality-name" placeholder="Nuevo Municipio" required>
-                                <button type="submit" class="btn-primary" title="Anadir"><i class="ph ph-plus-bold"></i></button>
+                                <button type="submit" class="btn-primary" title="Anadir"><i class="ph ph-plus" style="font-size: 20px; font-weight: bold;"></i></button>
                             </form>
                             <ul id="list-municipalities" class="catalog-list"></ul>
                         </div>
@@ -196,7 +196,7 @@
                             <form id="form-neighborhood" class="catalog-form">
                                 <select id="neigh-municipality-select" required><option value="">Municipio...</option></select>
                                 <input type="text" id="neighborhood-name" placeholder="Nuevo Barrio" required>
-                                <button type="submit" class="btn-primary" title="Anadir"><i class="ph ph-plus-bold"></i></button>
+                                <button type="submit" class="btn-primary" title="Anadir"><i class="ph ph-plus" style="font-size: 20px; font-weight: bold;"></i></button>
                             </form>
                             <ul id="list-neighborhoods" class="catalog-list"></ul>
                         </div>
@@ -208,7 +208,7 @@
                             </div>
                             <form id="form-incident-type" class="catalog-form">
                                 <input type="text" id="itype-name" placeholder="Tipo de incidente" required>
-                                <button type="submit" class="btn-primary" title="Anadir"><i class="ph ph-plus-bold"></i></button>
+                                <button type="submit" class="btn-primary" title="Anadir"><i class="ph ph-plus" style="font-size: 20px; font-weight: bold;"></i></button>
                             </form>
                             <ul id="list-incident-types" class="catalog-list"></ul>
                         </div>
