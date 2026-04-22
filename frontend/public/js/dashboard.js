@@ -71,7 +71,7 @@ function getGlobalMap() {
 
 async function loadPublicIncidents() {
     try {
-        const res = await fetch('http://localhost:3000/api/incidents');
+        const res = await fetch('/api/incidents');
         const data = await res.json();
         window._publicIncidentsData = data.filter(inc => inc.validationStatus === 'published');
 
@@ -267,7 +267,7 @@ window.submitPublicComment = async function (id) {
     input.disabled = true;
 
     try {
-        const res = await fetch(`http://localhost:3000/api/incidents/${id}/comments`, {
+        const res = await fetch(`/api/incidents/${id}/comments`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ userEmail, content })
@@ -339,8 +339,8 @@ let imageBase64Data = "";
 async function fetchCatalogs() {
     try {
         const [typesRes, provRes] = await Promise.all([
-            fetch("http://localhost:3000/api/admin/incident-types"),
-            fetch("http://localhost:3000/api/admin/provinces")
+            fetch("/api/admin/incident-types"),
+            fetch("/api/admin/provinces")
         ]);
         const types = await typesRes.json();
         const provinces = await provRes.json();
@@ -369,7 +369,7 @@ if (incidentProvince) {
         if (!e.target.value) return;
 
         try {
-            const res = await fetch(`http://localhost:3000/api/admin/municipalities?provinceId=${e.target.value}`);
+            const res = await fetch(`/api/admin/municipalities?provinceId=${e.target.value}`);
             const munis = await res.json();
             munis.forEach(m => {
                 const opt = document.createElement("option");
@@ -389,7 +389,7 @@ if (incidentMunicipality) {
         if (!e.target.value) return;
 
         try {
-            const res = await fetch(`http://localhost:3000/api/admin/neighborhoods?municipalityId=${e.target.value}`);
+            const res = await fetch(`/api/admin/neighborhoods?municipalityId=${e.target.value}`);
             const neighs = await res.json();
             neighs.forEach(n => {
                 const opt = document.createElement("option");
@@ -423,7 +423,7 @@ if (filterStatus) {
 
 async function fetchIncidents() {
     try {
-        const response = await fetch("http://localhost:3000/api/incidents");
+        const response = await fetch("/api/incidents");
         allIncidents = await response.json();
 
         renderIncidents(allIncidents);
@@ -517,7 +517,7 @@ async function handleIncident(e) {
     e.preventDefault();
 
     const isEdit = incidentId.value !== "";
-    const endpoint = isEdit ? `http://localhost:3000/api/incidents/${incidentId.value}` : "http://localhost:3000/api/incidents";
+    const endpoint = isEdit ? `/api/incidents/${incidentId.value}` : "/api/incidents";
     const method = isEdit ? "PUT" : "POST";
 
     const payload = {
@@ -645,7 +645,7 @@ async function deleteIncident(id) {
     if (!confirm("¿Estás seguro de eliminar este incidente?")) return;
 
     try {
-        const res = await fetch(`http://localhost:3000/api/incidents/${id}`, {
+        const res = await fetch(`/api/incidents/${id}`, {
             method: "DELETE"
         });
 

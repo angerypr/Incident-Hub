@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const path = require('path');
@@ -7,11 +8,11 @@ const adminRoutes = require('./routes/adminRoutes');
 const aiRoutes = require('./routes/aiRoutes');
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 
-mongoose.connect('mongodb://127.0.0.1:27017/incidenthub')
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/incidenthub')
     .then(() => console.log("MongoDB conectado"))
     .catch(err => console.log(err));
 

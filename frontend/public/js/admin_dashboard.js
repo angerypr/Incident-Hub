@@ -69,7 +69,7 @@ function initSettings() {
 
 async function loadStats() {
     try {
-        const res = await fetch('http://localhost:3000/api/admin/stats');
+        const res = await fetch('/api/admin/stats');
         const data = await res.json();
         document.getElementById('stat-users').textContent = data.totalUsers || 0;
         document.getElementById('stat-total').textContent = data.totalIncidents || 0;
@@ -86,7 +86,7 @@ async function loadCatalogs() {
 }
 
 async function fetchProvinces() {
-    const res = await fetch('http://localhost:3000/api/admin/provinces');
+    const res = await fetch('/api/admin/provinces');
     const data = await res.json();
     
     const list = document.getElementById('list-provinces');
@@ -113,7 +113,7 @@ document.getElementById('form-province').addEventListener('submit', async (e) =>
     e.preventDefault();
     const name = document.getElementById('province-name').value;
     try {
-        const res = await fetch('http://localhost:3000/api/admin/provinces', {
+        const res = await fetch('/api/admin/provinces', {
             method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name })
         });
         const data = await res.json();
@@ -127,7 +127,7 @@ window.promptEditProvince = async function(id, oldName) {
     const newName = prompt("Nuevo nombre para la provincia:", oldName);
     if (!newName || newName === oldName) return;
     try {
-        const res = await fetch(`http://localhost:3000/api/admin/provinces/${id}`, { method: 'PUT', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({name: newName}) });
+        const res = await fetch(`/api/admin/provinces/${id}`, { method: 'PUT', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({name: newName}) });
         const data = await res.json();
         if(!res.ok) alert("Error al editar: " + (data.error || "Datos invalidos"));
         fetchProvinces();
@@ -137,13 +137,13 @@ window.promptEditProvince = async function(id, oldName) {
 window.deleteProvince = async function(id) {
     if (!confirm("Eliminar esta provincia? Podria afectar registros vinculados.")) return;
     try {
-        await fetch(`http://localhost:3000/api/admin/provinces/${id}`, { method: 'DELETE' });
+        await fetch(`/api/admin/provinces/${id}`, { method: 'DELETE' });
         fetchProvinces();
     } catch(err) { alert("Error de conexion"); }
 };
 
 async function fetchMunicipalities() {
-    const res = await fetch('http://localhost:3000/api/admin/municipalities');
+    const res = await fetch('/api/admin/municipalities');
     const data = await res.json();
     
     const list = document.getElementById('list-municipalities');
@@ -172,7 +172,7 @@ document.getElementById('form-municipality').addEventListener('submit', async (e
     const name = document.getElementById('municipality-name').value;
     const provinceId = document.getElementById('mun-province-select').value;
     try {
-        const res = await fetch('http://localhost:3000/api/admin/municipalities', {
+        const res = await fetch('/api/admin/municipalities', {
             method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, provinceId })
         });
         const data = await res.json();
@@ -186,7 +186,7 @@ window.promptEditMunicipality = async function(id, oldName, provId) {
     const newName = prompt("Nuevo nombre para el municipio:", oldName);
     if (!newName || newName === oldName) return;
     try {
-        const res = await fetch(`http://localhost:3000/api/admin/municipalities/${id}`, { method: 'PUT', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({name: newName, provinceId: provId}) });
+        const res = await fetch(`/api/admin/municipalities/${id}`, { method: 'PUT', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({name: newName, provinceId: provId}) });
         const data = await res.json();
         if(!res.ok) alert("Error al editar: " + (data.error || "Datos invalidos"));
         fetchMunicipalities();
@@ -195,12 +195,12 @@ window.promptEditMunicipality = async function(id, oldName, provId) {
 
 window.deleteMunicipality = async function(id) {
     if (!confirm("Eliminar este municipio?")) return;
-    await fetch(`http://localhost:3000/api/admin/municipalities/${id}`, { method: 'DELETE' });
+    await fetch(`/api/admin/municipalities/${id}`, { method: 'DELETE' });
     fetchMunicipalities();
 };
 
 async function fetchNeighborhoods() {
-    const res = await fetch('http://localhost:3000/api/admin/neighborhoods');
+    const res = await fetch('/api/admin/neighborhoods');
     const data = await res.json();
     
     const list = document.getElementById('list-neighborhoods');
@@ -226,7 +226,7 @@ document.getElementById('form-neighborhood').addEventListener('submit', async (e
     const name = document.getElementById('neighborhood-name').value;
     const municipalityId = document.getElementById('neigh-municipality-select').value;
     try {
-        const res = await fetch('http://localhost:3000/api/admin/neighborhoods', {
+        const res = await fetch('/api/admin/neighborhoods', {
             method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, municipalityId })
         });
         const data = await res.json();
@@ -240,7 +240,7 @@ window.promptEditNeighborhood = async function(id, oldName, munId) {
     const newName = prompt("Nuevo nombre para el barrio:", oldName);
     if (!newName || newName === oldName) return;
     try {
-        const res = await fetch(`http://localhost:3000/api/admin/neighborhoods/${id}`, { method: 'PUT', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({name: newName, municipalityId: munId}) });
+        const res = await fetch(`/api/admin/neighborhoods/${id}`, { method: 'PUT', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({name: newName, municipalityId: munId}) });
         const data = await res.json();
         if(!res.ok) alert("Error al editar: " + (data.error || "Datos invalidos"));
         fetchNeighborhoods();
@@ -249,12 +249,12 @@ window.promptEditNeighborhood = async function(id, oldName, munId) {
 
 window.deleteNeighborhood = async function(id) {
     if (!confirm("Eliminar este barrio?")) return;
-    await fetch(`http://localhost:3000/api/admin/neighborhoods/${id}`, { method: 'DELETE' });
+    await fetch(`/api/admin/neighborhoods/${id}`, { method: 'DELETE' });
     fetchNeighborhoods();
 };
 
 async function fetchIncidentTypes() {
-    const res = await fetch('http://localhost:3000/api/admin/incident-types');
+    const res = await fetch('/api/admin/incident-types');
     const data = await res.json();
     
     const list = document.getElementById('list-incident-types');
@@ -278,7 +278,7 @@ document.getElementById('form-incident-type').addEventListener('submit', async (
     e.preventDefault();
     const name = document.getElementById('itype-name').value;
     try {
-        const res = await fetch('http://localhost:3000/api/admin/incident-types', {
+        const res = await fetch('/api/admin/incident-types', {
             method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name })
         });
         const data = await res.json();
@@ -292,7 +292,7 @@ window.promptEditIncidentType = async function(id, oldName) {
     const newName = prompt("Nuevo nombre para el tipo de incidente:", oldName);
     if (!newName || newName === oldName) return;
     try {
-        const res = await fetch(`http://localhost:3000/api/admin/incident-types/${id}`, { method: 'PUT', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({name: newName}) });
+        const res = await fetch(`/api/admin/incident-types/${id}`, { method: 'PUT', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({name: newName}) });
         const data = await res.json();
         if(!res.ok) alert("Error al editar: " + (data.error || "Datos invalidos"));
         fetchIncidentTypes();
@@ -301,14 +301,14 @@ window.promptEditIncidentType = async function(id, oldName) {
 
 window.deleteIncidentType = async function(id) {
     if (!confirm("Eliminar este tipo de incidente?")) return;
-    await fetch(`http://localhost:3000/api/admin/incident-types/${id}`, { method: 'DELETE' });
+    await fetch(`/api/admin/incident-types/${id}`, { method: 'DELETE' });
     fetchIncidentTypes();
 };
 
 window._pendingIncidentsData = [];
 
 async function loadValidations() {
-    const res = await fetch('http://localhost:3000/api/admin/incidents/pending');
+    const res = await fetch('/api/admin/incidents/pending');
     window._pendingIncidentsData = await res.json();
     const data = window._pendingIncidentsData;
     const container = document.getElementById('validations-container');
@@ -415,7 +415,7 @@ window.openValidationDetails = function(id) {
 
 window.publishIncident = async function(id) {
     if(!confirm("Deseas publicar este incidente? Se mostrara a todos.")) return;
-    await fetch(`http://localhost:3000/api/admin/incidents/${id}/publish`, { method: 'PUT' });
+    await fetch(`/api/admin/incidents/${id}/publish`, { method: 'PUT' });
     loadValidations();
     loadStats();
     loadMergeOptions();
@@ -423,14 +423,14 @@ window.publishIncident = async function(id) {
 
 window.rejectIncident = async function(id) {
     if(!confirm("Deseas rechazar y archivar este incidente?")) return;
-    await fetch(`http://localhost:3000/api/admin/incidents/${id}/reject`, { method: 'PUT' });
+    await fetch(`/api/admin/incidents/${id}/reject`, { method: 'PUT' });
     loadValidations();
     loadStats();
     loadMergeOptions();
 };
 
 async function loadMergeOptions() {
-    const res = await fetch('http://localhost:3000/api/admin/incidents/pending'); 
+    const res = await fetch('/api/admin/incidents/pending'); 
     window._pendingIncidentsData = await res.json();
     const data = window._pendingIncidentsData;
     
@@ -513,7 +513,7 @@ window.promptMergeSelected = async function() {
         const secondaryIds = ids.filter(id => id !== primaryId);
         
         try {
-            const res = await fetch('http://localhost:3000/api/admin/incidents/merge', {
+            const res = await fetch('/api/admin/incidents/merge', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ primaryId, secondaryIds })
@@ -531,7 +531,7 @@ window.promptMergeSelected = async function() {
 window._publishedIncidentsData = [];
 
 async function loadPublished() {
-    const res = await fetch('http://localhost:3000/api/incidents');
+    const res = await fetch('/api/incidents');
     const data = await res.json();
     const published = data.filter(inc => inc.validationStatus === 'published');
     window._publishedIncidentsData = published;
@@ -572,7 +572,7 @@ window.showPublishedView = function() {
 window.deletePublishedIncident = async function(id) {
     if(!confirm("¿Estás seguro de eliminar permanentemente este incidente publicado?")) return;
     try {
-        await fetch(`http://localhost:3000/api/incidents/${id}`, { method: 'DELETE' });
+        await fetch(`/api/incidents/${id}`, { method: 'DELETE' });
         loadPublished();
         loadStats();
     } catch(e) { console.error(e); }
